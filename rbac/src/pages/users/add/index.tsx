@@ -1,8 +1,8 @@
 import Form from '@/components/FormField'
 import React, { useState } from 'react'
 import { useFormContext, useController } from 'react-hook-form'
-import CloseEyeIcon from '../../../public/asserts/closeEyeIcon'
-import OpenEyeIcon from '../../../public/asserts/openEyeIcon'
+import CloseEyeIcon from '../../../../public/asserts/closeEyeIcon'
+import OpenEyeIcon from '../../../../public/asserts/openEyeIcon'
 import { Button } from '@/ui/button'
 
 const index = () => {
