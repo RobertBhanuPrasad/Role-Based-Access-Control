@@ -1,9 +1,7 @@
 "use client";
 
 import {
-  AccessorColumnDef,
   ColumnDef,
-  ColumnDefResolved,
   RowSelectionState,
   SortingState,
   VisibilityState,
@@ -20,7 +18,7 @@ import { Table, TableBody,
 
 import ClearAll from "../../public/asserts/ClearAll";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "@/ui/button";
 import { Checkbox } from "./checkbox";
 import { DropdownMenu, DropdownMenuContent,
@@ -204,7 +202,6 @@ export function BaseTable<TData, TValue>({
   noScroll,
   actionComponent,
   userColumnPreferences,
-  tableContainerId = "base-table-container",
   handleUserColumnPreferences,
   tableId = "",
 }: IBaseTable<TData, TValue>) {
