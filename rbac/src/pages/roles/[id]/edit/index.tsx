@@ -1,5 +1,5 @@
 import React from 'react'
-import { CreateUserPage } from '../../add';
+import { CreatRolePage } from '../../add';
 
 const index = () => {
   return (
@@ -11,6 +11,6 @@ export default index;
 
 export const EditUserPage = () => {
     return (
-        <CreateUserPage/>
+        <CreatRolePage/>
     )
 }
