@@ -4,18 +4,25 @@ import { useFormContext, useController } from 'react-hook-form'
 import CloseEyeIcon from '../../../../public/asserts/closeEyeIcon'
 import OpenEyeIcon from '../../../../public/asserts/openEyeIcon'
 import { Button } from '@/components/ui/button'
+import { Text } from '@/components/ui/TextTags'
+import { Input } from '@/components/ui/input'
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
+// import { MultiSelect } from '@/components/ui/multi-select'
+import { CreateUserFormNames } from '@/constants/CreateUserConstants'
+import { Textarea } from '@/components/ui/textarea'
+import { generate } from "referral-codes";
 
 const index = () => {
-    const onSubmit = (data: unknown) => {
-        console.log("formbhanudata", data);
-      };
+  const onSubmit = (data: unknown) => {
+    console.log("formbhanudata", data);
+  };
   return (
     <div className="">
       <div>
         <Form
           onSubmit={onSubmit}
         >
-            <CreateUserPage/>
+          <CreateUserPage />
         </Form>
       </div>
     </div>
@@ -24,281 +31,461 @@ const index = () => {
 
 export default index
 
+
+
 export const CreateUserPage = () => {
-    const [loading, setLoading] = useState(false);
-    const { getValues } = useFormContext();
-    const formData = getValues();
-    const [passwordShow, setPasswordShow] = useState(false);
-    
-    // use controller for first name
-    const {
-      field: { value: firstName, onChange: onFirstName },
-    } = useController({
-      name: "firstName",
-    });
-    
-    // use controller for last name
-    const {
-      field: { value: lastName, onChange: onLastName },
-    } = useController({
-      name: "lastName",
-    });
-    
-    // use controller for email
-    const {
-      field: { value: email, onChange: onEmail },
-    } = useController({
-      name: "email",
-    });
-    
-    // use controller for password
-    const {
-      field: { value: password, onChange: onPassword },
-    } = useController({
-      name: "password",
-    });
-    
-    // use controller for role
-    const {
-      field: { value: role, onChange: onRole },
-    } = useController({
-      name: "role",
-    });
-    
-    // use controller for phone number
-    const {
-      field: { value: phoneNumber, onChange: onPhoneNumber },
-    } = useController({
-      name: "phoneNumber",
-    });
-    
-    // use controller for status
-    const {
-      field: { value: status, onChange: onStatus },
-    } = useController({
-      name: "status",
-    });
-    
-    // use controller for date of birth
-    const {
-      field: { value: dateOfBirth, onChange: onDateOfBirth },
-    } = useController({
-      name: "dateOfBirth",
-    });
-    
-    // use controller for address
-    const {
-      field: { value: address, onChange: onAddress },
-    } = useController({
-      name: "address",
-    });
-    
-    interface FormData {
-      firstName: string;
-      lastName: string;
-      email: string;
-      password: string;
-      role: string;
-      phoneNumber: string;
-      status: string;
-      dateOfBirth: string;
-      address: string;
-    }
-    
-    const onSubmitForm = (formData: FormData) => {
-      setLoading(true);
-  
-      console.log(formData, "form data");
-    }
+  const { watch } = useFormContext();
 
-    
-    return (
-        <main className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-        <div className="w-full max-w-md bg-white p-6 shadow-md rounded-lg">
-          <h1 className="text-2xl font-semibold text-center mb-6">Create User</h1>
-          <div className="flex flex-col gap-y-6">
-            {/* First Name */}
-            <div className="form-control flex flex-col">
-              <label htmlFor="firstName" className="label mb-2">
-                <span className="label-text text-[18px] sm:text-[20px] font-semibold">First Name</span>
-              </label>
-              <input
-                type="text"
-                id="firstName"
-                placeholder="Enter first name"
-                className="h-[40px] w-full rounded-[12px] border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-700"
-                value={firstName}
-                onChange={onFirstName}
-              />
-            </div>
-      
-            {/* Last Name */}
-            <div className="form-control flex flex-col">
-              <label htmlFor="lastName" className="label mb-2">
-                <span className="label-text text-[18px] sm:text-[20px] font-semibold">Last Name</span>
-              </label>
-              <input
-                type="text"
-                id="lastName"
-                placeholder="Enter last name"
-                className="h-[40px] w-full rounded-[12px] border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-700"
-                value={lastName}
-                onChange={onLastName}
-              />
-            </div>
-      
-            {/* Email */}
-            <div className="form-control flex flex-col">
-              <label htmlFor="email" className="label mb-2">
-                <span className="label-text text-[18px] sm:text-[20px] font-semibold">Email</span>
-              </label>
-              <input
-                type="email"
-                id="email"
-                placeholder="Enter email"
-                className="h-[40px] w-full rounded-[12px] border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-700"
-                value={email}
-                onChange={onEmail}
-              />
-            </div>
-      
-            {/* Password */}
-            <div className="form-control flex flex-col">
-              <label htmlFor="password" className="label mb-2">
-                <span className="label-text text-[18px] sm:text-[20px] font-semibold">Password</span>
-              </label>
-              <div className="flex h-[40px] w-full items-center justify-between rounded-[12px] border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus-within:border-blue-700">
-                <input
-                  type={passwordShow ? "text" : "password"}
-                  value={password}
-                  className="focus:outline-none flex-1"
-                  onChange={(e) => {
-                    e.stopPropagation();
-                    onPassword(e.target.value);
-                  }}
-                  placeholder="Enter password"
-                />
-                <span
-                  tabIndex={3}
-                  className="mr-[10px] cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setPasswordShow(!passwordShow);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.code === "Enter" || e.code === "Space") {
-                      setPasswordShow(!passwordShow);
-                    }
-                  }}
-                >
-                  {passwordShow ? <CloseEyeIcon /> : <OpenEyeIcon />}
-                </span>
-              </div>
-            </div>
-      
-            {/* Role */}
-            <div className="form-control flex flex-col">
-              <label htmlFor="role" className="label mb-2">
-                <span className="label-text text-[18px] sm:text-[20px] font-semibold">Role</span>
-              </label>
-              <select
-                id="role"
-                className="h-[40px] w-full rounded-[12px] border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-700"
-                value={role}
-                onChange={onRole}
-              >
-                <option value="" disabled>Select Role</option>
-                {/* {roles.map((roleOption) => (
-                  <option key={roleOption} value={roleOption}>
-                    {roleOption}
-                  </option>
-                ))} */}
-              </select>
-            </div>
-      
-            {/* Phone Number */}
-            <div className="form-control flex flex-col">
-              <label htmlFor="phoneNumber" className="label mb-2">
-                <span className="label-text text-[18px] sm:text-[20px] font-semibold">Phone Number</span>
-              </label>
-              <input
-                type="tel"
-                id="phoneNumber"
-                placeholder="Enter phone number"
-                className="h-[40px] w-full rounded-[12px] border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-700"
-                value={phoneNumber}
-                onChange={onPhoneNumber}
-              />
-            </div>
-      
-            {/* Status */}
-            <div className="form-control flex flex-col">
-              <label htmlFor="status" className="label mb-2">
-                <span className="label-text text-[18px] sm:text-[20px] font-semibold">Status</span>
-              </label>
-              <select
-                id="status"
-                className="h-[40px] w-full rounded-[12px] border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-700"
-                value={status}
-                onChange={onStatus}
-              >
-                {/* {statuses.map((statusOption) => (
-                  <option key={statusOption} value={statusOption}>
-                    {statusOption}
-                  </option>
-                ))} */}
-              </select>
-            </div>
+  const formData = watch();
 
-            {/* Date of Birth */}
-      <div className="form-control flex flex-col">
-        <label htmlFor="dateOfBirth" className="label mb-2">
-          <span className="label-text text-[18px] sm:text-[20px] font-semibold">Date of Birth</span>
-        </label>
-        <input
-          type="date"
-          id="dateOfBirth"
-          placeholder="Enter date of birth"
-          className="h-[40px] w-full rounded-[12px] border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-700"
-          value={dateOfBirth}
-          onChange={onDateOfBirth}
-          required
-        />
-      </div>
+  console.log("heyy form data", formData);
 
-      {/* Address */}
-      <div className="form-control flex flex-col">
-        <label htmlFor="address" className="label mb-2">
-          <span className="label-text text-[18px] sm:text-[20px] font-semibold">Address</span>
-        </label>
-        <textarea
-          id="address"
-          placeholder="Enter address"
-          className="h-[80px] w-full rounded-[12px] border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-700"
-          value={address}
-          onChange={onAddress}
-          required
-        />
-      </div>
-
-      
-            {/* Submit Button */}
-            <div className="form-control flex justify-center mt-6">
-            <Button
-                      type="button"
-                      className="h-[46px] min-w-[106px] rounded-[12px] bg-[#7677F4] text-base font-bold"
-                      onClick={() => onSubmitForm(formData as FormData)}
-                    >
-                        {loading && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[white]/50 opacity-100">
-                          <div className="loader"></div>
-                        </div>
-                      )}
-                      Create User
-                      </Button>
-            </div>
-          </div>
+  return (
+    <div className='mx-auto w-full min-w-[1000px] max-w-[1640px] px-8 pb-8'>
+      <div className="flex flex-wrap gap-x-8 gap-y-6 bg-white min-h-screen">
+        <div className="min-h-20 w-80">
+          <FirstName />
         </div>
-      </main>        
-    )
+        <div className="min-h-20 w-80">
+          <LastName />
+        </div>
+        <div className="min-h-20 w-80">
+          <Email />
+        </div>
+        <div>
+            <Password />
+        </div>
+        <div className="min-h-20 w-80">
+            <StatusDropdown />
+        </div>
+        <div className="min-h-20 w-80">
+          role drop down
+            {/* <RoleDropDown /> */}
+        </div>
+        <div className="min-h-20 w-80">
+          <AddressDetails/>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+
+export const FirstName = ({ index }: any) => {
+  const {
+    field: { value, onChange },
+    fieldState: { error },
+  } = useController({ name: CreateUserFormNames?.first_name });
+
+
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="flex flex-row items-center gap-1">
+        <Text className="text-xs font-normal text-[#333333]">
+          First Name
+        </Text>{" "}
+        <Text className="text-[#7677F4]">*</Text>
+      </div>
+      <div>
+        <Input
+          placeholder="Email"
+          value={value}
+          onChange={(val) => {
+            onChange(val?.target?.value);
+          }}
+          error={error ? true : false}
+          className="rounded-[12px]"
+          id={`step-6-contact-name-${index}`}
+        />
+        {error && (
+          <span className="text-[12px] text-[#FF6D6D]">{error?.message}</span>
+        )}
+      </div>
+    </div>
+  );
+};
+
+
+
+
+export const LastName = ({ index }: any) => {
+  const {
+    field: { value, onChange },
+    fieldState: { error },
+  } = useController({ name: CreateUserFormNames?.last_name });
+
+
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="flex flex-row items-center gap-1">
+        <Text className="text-xs font-normal text-[#333333]">
+          Last Name
+        </Text>{" "}
+        <Text className="text-[#7677F4]">*</Text>
+      </div>
+      <div>
+        <Input
+          placeholder="Email"
+          value={value}
+          onChange={(val) => {
+            onChange(val?.target?.value);
+          }}
+          error={error ? true : false}
+          className="rounded-[12px]"
+          id={`step-6-contact-name-${index}`}
+        />
+        {error && (
+          <span className="text-[12px] text-[#FF6D6D]">{error?.message}</span>
+        )}
+      </div>
+    </div>
+  );
+};
+
+
+export const Email = ({ index }: any) => {
+  const {
+    field: { value, onChange },
+    fieldState: { error },
+  } = useController({ name: CreateUserFormNames?.email });
+
+
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="flex flex-row items-center gap-1">
+        <Text className="text-xs font-normal text-[#333333]">
+          First Name
+        </Text>{" "}
+        <Text className="text-[#7677F4]">*</Text>
+      </div>
+      <div>
+        <Input
+          placeholder="Email"
+          value={value}
+          onChange={(val) => {
+            onChange(val?.target?.value);
+          }}
+          error={error ? true : false}
+          className="rounded-[12px]"
+          id={`step-6-contact-name-${index}`}
+        />
+        {error && (
+          <span className="text-[12px] text-[#FF6D6D]">{error?.message}</span>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export const Password = () => {
+  const [passwordShow, setPasswordShow] = useState(false);
+  const {
+    field: { value: password, onChange: onPassword },
+    fieldState: { error },
+  } = useController({ name: CreateUserFormNames?.password });
+
+  return (
+    <div className="form-control mt-0 flex items-center justify-between">
+      <div className="flex flex-row items-center gap-1">
+        <Text className="text-xs font-normal text-[#333333]">
+         Password
+        </Text>{" "}
+        <Text className="text-[#7677F4]">*</Text>
+      </div>
+      <div className="ml-[10px] flex h-[40px] w-[300px] items-center justify-between rounded-[12px] border-[2px] border-black border-inherit p-1 pl-[15px] outline-none focus:border-blue-700">
+        <input
+          type={passwordShow ? "text" : "password"}
+          value={password}
+          className="focus:outline-none"
+          onChange={(e) => {
+            e.stopPropagation();
+            onPassword(e.target.value);
+          }}
+          placeholder="Enter password"
+        />
+        <span
+          tabIndex={3}
+          className="mr-[10px] cursor-pointer"
+          onClick={(e) => {
+            e.stopPropagation();
+            setPasswordShow(!passwordShow);
+          }}
+          onKeyDown={(e) => {
+            if (e.code === "Enter" || e.code === "Space") {
+              setPasswordShow(!passwordShow);
+            }
+          }}
+        >
+          {passwordShow ? <CloseEyeIcon /> : <OpenEyeIcon />}
+        </span>
+      </div>
+    </div>
+  )
 }
+
+
+
+export const phoneNumber = () => {
+  const {
+    field: { value, onChange },
+    fieldState: { error },
+  } = useController({
+    name: CreateUserFormNames?.phone_number,
+  });
+
+  // Function to store the preprocessed max capacity input value
+  const handleMaxCapacityChange = (value: any) => {
+    onChange(value);
+  };
+
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="flex flex-row items-center gap-1">
+        <Text className="text-xs font-normal text-[#333333]">
+          {t("bx_v7:caf_number_of_uses_allowed")}
+        </Text>
+        <Text className="text-[#7677F4]">*</Text>
+
+      </div>
+      <Input
+        placeholder={t("bx_v7:caf_enter_no_of_uses")}
+        value={value}
+        onChange={(e) => {
+          handleMaxCapacityChange(e.target.value);
+        }}
+        className="rounded-[12px] text-[14px]"
+        error={error ? true : false}
+        extendedType="number-input"
+      />
+      {error && (
+        <span className="!w-[320px] break-all text-[12px] text-[#FF6D6D]">
+          {error?.message}
+        </span>
+      )}
+    </div>
+  );
+};
+
+
+
+export const AddressDetails = () => {
+  const {
+    field: { value, onChange },
+    fieldState: { error },
+  } = useController({
+    name: CreateUserFormNames?.address,
+  });
+
+
+  return (
+    <div className="flex w-full flex-col gap-1">
+      <div className="flex flex-row items-center gap-1">
+        <Text className="text-xs font-normal text-[#333333]">
+          Address
+        </Text>{" "}
+      </div>
+      <Textarea
+        value={value}
+        onChange={(val) => {
+          onChange(val?.target?.value);
+        }}
+        placeholder="Enter the address"
+        className="w-full !rounded-xl text-sm font-normal placeholder:text-[#999999]"
+        error={error ? true : false}
+      />
+      {error && (
+        <span className="text-[12px] text-[#FF6D6D]">{error?.message}</span>
+      )}
+    </div>
+  );
+};
+
+
+export const GenerateUseCode = () => {
+  const {
+    field: { value, onChange },
+    fieldState: { error: discountCodeError },
+  } = useController({
+    name: CreateUserFormNames?.user_code,
+  });
+
+  function createDiscountCode() {
+    const discountCodeArray = generate({
+      length: 9,
+      count: 1,
+      charset: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    });
+
+    onChange(discountCodeArray?.[0]);
+  }
+
+  //this is used to show the validation error messages to the disocunt code
+  useEffect(() => {
+    const validateDiscountCode = async () => {
+      const { data } = await supabaseClient()
+        .from("org_product_discount_code")
+        .select("discount_code")
+        .eq("discount_code", value);
+
+      setDiscountCodeValidation(data);
+    };
+    validateDiscountCode();
+  }, [value, setDiscountCodeValidation]);
+
+  const handleCodeChange = (e: any) => {
+    onChange(e.target.value);
+  };
+
+
+
+  return (
+    <div className="flex w-full flex-col gap-1">
+      <div className="flex flex-row items-center gap-1">
+        <Text className="text-xs font-normal text-[#333333]">
+          {t("bx_v1:cpm_mr_enter_discount_date")}
+        </Text>{" "}
+        <Text className="text-[#7677F4]">*</Text>
+      </div>
+      <div className="flex w-[300px] flex-row gap-2">
+        {discountCodeType == customCode ? (
+          <Input
+            maxLength={24}
+            value={value}
+            error={!!discountCodeError}
+            onChange={handleCodeChange}
+            className="min-w-[320px] rounded-[12px]"
+            placeholder={t("bx_v1:cpm_mr_enter_discount_date")}
+          />
+        ) : (
+          <div className="flex w-full items-center gap-4">
+            <div className="flex-[7]">
+              <Input
+                readOnly={true}
+                value={value}
+                error={!!discountCodeError}
+                className="w-full rounded-[12px]"
+              />
+            </div>
+            <Button
+              onClick={createDiscountCode}
+              className="flex flex-[3] items-center justify-center rounded-[12px] px-4 py-3"
+              type="button"
+            >
+              {t("bx_v7:caf_generate")}
+            </Button>
+          </div>
+        )}
+      </div>
+      {discountCodeError && (
+        <span className="text-xs font-semibold text-[#FF6D6D]">
+          {discountCodeError?.message}
+        </span>
+      )}
+    </div>
+  );
+};
+
+// export const RoleDropDown = () => {
+//   // use controller for role
+//   const {
+//     field: { value: role, onChange: onSelectedRole },
+//   } = useController({
+//     name: CreateUserFormNames?.role,
+//   });
+
+//   const {
+//     field: { value: role_id, onChange: onSelectedRoleIds },
+//   } = useController({
+//     name: "role_id",
+//   });
+
+//   // function for modify the role form data
+//   const modifyRoleFormData = (id: number[]) => {
+//     const result = id?.map((role) => {
+//       const roleObject: any = roleQueryData?.data?.data?.find(
+//         (roleData) => roleData?.code == role
+//       );
+//       return roleObject?.id;
+//     });
+//     onSelectedRoleIds(result);
+//   };
+
+//   return (
+//     <div className="form-control flex items-center justify-between">
+//       <label className="text-[20px] font-semibold">Role:</label>
+
+//       <div className="w-[300px]">
+//         <MultiSelect
+//           value={role}
+//           placeholder={"Select Role"}
+//           // data={roleData}
+//           onBottomReached={() => { }}
+//           onChange={(val: any) => {
+//             onSelectedRole(val);
+//             modifyRoleFormData(val);
+//             if (val?.includes(teacherRole)) {
+//               setValue("root_product_teacher", [
+//                 {
+//                   root_product_id: undefined,
+//                   ttp_certification_type: undefined,
+//                 },
+//               ]);
+//             } else {
+//               setValue("root_product_teacher", []);
+//             }
+//           }}
+//           onSearch={() => { }}
+//           searchBar={false}
+//           variant="basic"
+//           isInitialLoading={roleQueryData?.isLoading}
+//           isFiltering={roleQueryData?.isFetching}
+//         />
+//       </div>
+//     </div>
+//   )
+// }
+
+export const StatusDropdown = () => {
+  // const [selectedStatus, setSelectedStatus] = useState<string>("");
+
+  const {
+    field: { value: selectedStatus, onChange: setSelectedStatus },
+  } = useController({
+    name: CreateUserFormNames?.status,
+  });
+
+  const statusOptions = [
+    { label: "Active", value: "active" },
+    { label: "Inactive", value: "inactive" },
+  ];
+
+  const handleChange = (value: string) => {
+    setSelectedStatus(value);
+    console.log("Selected Status:", value);
+  };
+
+  return (
+    <div className="w-full max-w-xs">
+      <Select
+        value={selectedStatus}
+        onValueChange={(value) => handleChange(value)}
+      >
+        <SelectTrigger className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+          <SelectValue placeholder="Select Status" />
+        </SelectTrigger>
+        <SelectContent>
+          {statusOptions.map((option) => (
+            <SelectItem
+              key={option.value}
+              value={option.value}
+              className="text-sm py-2"
+            >
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+};

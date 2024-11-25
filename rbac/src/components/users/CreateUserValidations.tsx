@@ -38,9 +38,6 @@ export const CreateUserValidationSchema = z.object({
   role: z
     .enum(["admin", "editor", "viewer"], {
       required_error: "Role is required",
-    })
-    .refine((role) => role !== "", {
-      message: "Invalid role selected",
     }),
 
   // Status validation

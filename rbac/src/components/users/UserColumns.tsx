@@ -185,7 +185,7 @@ export const transferColumns = () => {
 
 
 
-export const UserActions = ({ participantId }) => {
+export const UserActions = ({ participantId }: { participantId: string }) => {
     /**
      * transferParticipantActions is an array that contains the actions that can be performed on the transfer participant
      * The actions are: Approve/Reject, View Details, View Participant
@@ -197,7 +197,7 @@ export const UserActions = ({ participantId }) => {
         { value: 'delete', label: 'Delete', isEnable: true },
     ];
 
-    const handleAction = async (action) => {
+    const handleAction = async (action: any) => {
         if (action === 'delete') {
             const confirmed = window.confirm('Are you sure you want to delete this participant?');
             if (confirmed) {

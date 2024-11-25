@@ -1,7 +1,7 @@
 "use client";
 
 import GetScrollTypesAlert from "./GetScrollAlert";
-import DropDown from "../../public/asserts/DropDown";
+import DropDown from "../../../public/asserts/DropDown";
 import { uniqBy } from "lodash";
 import { X } from "lucide-react";
 import { useTranslation } from "next-i18next";
@@ -89,7 +89,7 @@ export function MultiSelect({
    * with cmdk package it's not possible pass value as object or array of object expect number | string
    * So to override this we are going to stringify options whatever we are passing with the below conditions
    */
-  let modifiedData = data?.map((obj) => {
+  const modifiedData = data?.map((obj) => {
     return {
       label: obj.label,
       value:
@@ -203,16 +203,16 @@ export function MultiSelect({
     };
   }, [open, popoverOpen]);
 
-  const findObjectById = (id: any): DataItem | undefined => {
+  const findObjectById = (id: string | number): DataItem | undefined => {
     // Find the object with the given id
     return filteredData.find(
-      (obj) => obj.value == (typeof id === "string" ? id : JSON.stringify(id))
+      (obj: any) => obj.value == (typeof id === "string" ? id : JSON.stringify(id))
     );
   };
 
   // Filter out selected values from the dropdown
   const selectables = filteredData.filter(
-    (obj) =>
+    (obj: any) =>
       !selected.find((selectedObj) => {
         selectedObj =
           typeof selectedObj === "string"
@@ -291,6 +291,7 @@ export function MultiSelect({
                       type="button"
                       className="ml-1 flex items-center rounded-full outline-none"
                       onClick={() => handleUnselect(item)}
+                      title="Unselect item"
                     >
                       {!noIcon && (
                         <X
@@ -333,6 +334,7 @@ export function MultiSelect({
                     type="button"
                     disabled={disabled}
                     className={`w-full ${disabled ? "cursor-not-allowed text-[#D6D7D8] opacity-30" : ""}`}
+                    title="Open dropdown"
                   >
                     <div className="px-1 py-[7px]">
                       <DropDown fill="#414141" />
@@ -469,7 +471,7 @@ export function MultiSelect({
                               <div key={index}>
                                 <CommandItem
                                   key={option.value}
-                                  onSelect={(value) => {
+                                  onSelect={() => {
                                     let selectedValue = option.value;
                                     try {
                                       selectedValue = JSON.parse(selectedValue);

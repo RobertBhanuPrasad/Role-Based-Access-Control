@@ -1,5 +1,5 @@
 import React, { HTMLAttributes } from "react";
-import { cn } from "src/lib/utils";
+import { cn } from "@/lib/utils"
 
 /** Component for a level 1 heading with a font size of 32px and semibold font weight
  *
