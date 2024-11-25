@@ -448,11 +448,11 @@ export function MultiSelect({
                   </div>
                 ) : (
                   <>
-                    <CommandList className="max-h-[224px]">
+                    <CommandList className="max-h-[224px] text-black">
                       <CommandEmpty>
                         {searchValue
-                          ? t("bx_v1:cm_no_search_results_found")
-                          : t("bx_v1:cm_no_data")}
+                          ? "No search Results found"
+                          : "no data found"}
                       </CommandEmpty>
                       <GetScrollTypesAlert
                         id={"multiselect"}

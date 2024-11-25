@@ -1,50 +1,68 @@
-import { supabase } from "@/utility/SupabaseClient";
+import { supabase } from '@/utility/SupabaseClient';
 import { toast, Bounce } from "react-toastify";
 
+
 type UserBody = {
-    id?: number;
-    email?: string;
-    first_name?: string;
-    last_name?: string;
-    role?: string;
-    status?: string;
-  };
+  id?: number;
+  email?: string;
+  first_name?: string;
+  last_name?: string;
+  role?: string;
+  status?: string;
+  full_name?: string;
+  user_code?: string;
+  address?: string;
+  phone_number?: string;
+};
 
-  
-export const handleSubmitUserUtils = async (formData: UserBody) => {
-
+export const handleSubmitUserDetails = async (data: UserBody) => {
   try {
-    const userBody: UserBody = {};
-
-    // Check each field in the formData and add it to the userBody if it exists
-    if (formData?.id) {
-      userBody.id = formData?.id;
+    const userBody: any = {};
+    console.log(data, "databhanusubmit")
+    // step - 1: Dynamically check and add fields to userBody if they exist in data
+    if (data?.id) {
+      userBody.id = data?.id;
     }
 
-    if (formData?.email) {
-      userBody.email = formData?.email.trim();
+    if (data?.first_name) {
+      userBody.first_name = data?.first_name?.trim();
     }
 
-    if (formData?.first_name) {
-      userBody.first_name = formData?.first_name.trim();
+    if (data?.last_name) {
+      userBody.last_name = data?.last_name?.trim();
     }
 
-    if (formData?.last_name) {
-      userBody.last_name = formData?.last_name.trim();
+    if (data?.email) {
+      userBody.email = data?.email?.trim();
     }
 
-    if (formData?.role) {
-      userBody.role = formData?.role;
+    if (data?.full_name) {
+      userBody.full_name = data?.full_name?.trim();
     }
 
-    if (formData?.status) {
-      userBody.status = formData?.status;
+    if (data?.address) {
+      userBody.address = data?.address?.trim();
     }
 
+    if (data?.phone_number) {
+      userBody.phone_number = data?.phone_number?.trim();
+    }
+
+    if (data?.role) {
+      userBody.role = data?.role;
+    }
+
+    if (data?.user_code) {
+      userBody.user_code = data?.user_code;
+    }
+
+    if (data?.status) {
+      userBody.status = data?.status;
+    }
 
     console.log("User payload:", userBody);
 
-    // Upsert the user into the Supabase users table
+    // Step - 2: Upsert the user into the Supabase users table
     const { data: userData, error } = await supabase
       .from("users")
       .upsert(userBody)
@@ -65,7 +83,7 @@ export const handleSubmitUserUtils = async (formData: UserBody) => {
       throw error;
     }
 
-    console.log("User upserted successfully:", userData);
+    console.log("User upserted successfullybhanu:", userData);
     toast.success("User saved successfully!", {
       position: "top-right",
       autoClose: 3000,
@@ -84,3 +102,51 @@ export const handleSubmitUserUtils = async (formData: UserBody) => {
   }
 };
 
+
+
+
+
+/**
+ * This function is used to determine whether the particular url contains edit-discount-code or not
+ * @param url
+ * @returns a boolean
+ */
+export const IsEditUser = (url: string) => {
+  return url?.includes("/edit");
+};
+
+/**
+ * This function is used to determine whether the particular url contains copy-disocunt-code or not
+ * @param url
+ * @returns a boolean
+ */
+export const IsCopyUser = (url: string) => {
+  return url?.includes("/copy");
+};
+
+/**
+ * This function is used to determine whether the particular url contains request discount code or not
+ * @param url
+ * @returns a boolean
+ */
+export const IsRequestUser = (url: string) => {
+  return url?.includes("/request");
+};
+
+/**
+ * This function is used to determine whether the particular url contains add or not
+ * @param url
+ * @returns a boolean
+ */
+export const IsNewUser = (url: string) => {
+  return url?.includes("/add");
+};
+
+/**
+ * This function is used to determine whether the particukar url contains list or not
+ * @param url
+ * @returns
+ */
+export const IsFindUser = (url: string) => {
+  return url?.includes("/list");
+};
