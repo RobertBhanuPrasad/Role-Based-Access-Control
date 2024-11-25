@@ -1,6 +1,6 @@
 "use-client"
 import { useRouter } from "next/router";
-import SlashIcon from "@/ui/SlashIcon";
+import SlashIcon from "../ui/SlashIcon";
 
 type breadCrumbDataType = {
     [key: string]: {
@@ -120,7 +120,7 @@ export const Breadcrumb = () => {
     const data = breadCrumbData[`${router.pathname}`];
 
     return (
-        <div className="flex h-[32px] shrink-0 items-center bg-[#F9F9F9] pl-8 text-[12px] font-normal drop-shadow-md">
+        <div className="flex h-[32px] shrink-0 items-center bg-[#F9F9F9] pl-8 text-[12px] font-normal drop-shadow-md !text-black">
             {/* <HomeIcon /> */}
             <div className="flex">
                 {data?.map((label: any, index: number) => {

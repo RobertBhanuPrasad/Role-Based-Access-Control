@@ -8,7 +8,7 @@ export default function App({ Component, pageProps }: AppProps) {
   <div>
     <Navbar />
     <Breadcrumb/>
-    <Component {...pageProps} />;
+    <Component {...pageProps} />
   </div>
   );
 }

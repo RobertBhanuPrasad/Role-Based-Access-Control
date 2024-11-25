@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { useFormContext, useController } from 'react-hook-form'
 import CloseEyeIcon from '../../../../public/asserts/closeEyeIcon'
 import OpenEyeIcon from '../../../../public/asserts/openEyeIcon'
-import { Button } from '@/ui/button'
+import { Button } from '@/components/ui/button'
 
 const index = () => {
     const onSubmit = (data: unknown) => {

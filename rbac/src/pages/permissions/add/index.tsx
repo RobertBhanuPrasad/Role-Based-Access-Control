@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Form from '@/components/FormField'
 import { useFormContext, useController } from 'react-hook-form';
-import { Button } from '@/ui/button';
+import { Button } from '@/components/ui/button';
 
 
 const CreatePermissionPage = () => {
