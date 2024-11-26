@@ -356,7 +356,7 @@ export function MultiSelect({
                   disabled={disabled}
                 >
                   <span className="text-[16px] leading-none">+</span>{" "}
-                  {t("add_button")}
+                  add button
                 </button>
               </div>
             )}

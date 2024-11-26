@@ -6,17 +6,20 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
-interface Role {
-    id: number;
+interface Permission {
     name: string;
+    type: string;
+    category: string;
     description: string;
     updated_at: string;
+    id: number;
 }
-export default function RolesTable() {
+
+export default function CrudTable() {
     const router = useRouter()
-    const [data, setData] = useState<Role[]>([]);
+    const [data, setData] = useState<Permission[]>([]);
     const [loading, setLoading] = useState(true);
-    const [selectedRoles, setSelectedRoles] = useState<number[]>([]); // Stores selected role IDs
+    const [selectedPermissions, setSelectedPermissions] = useState<number[]>([]); // Stores selected permission IDs
     const [bulkAction, setBulkAction] = useState<string | null>(null); // Tracks dropdown action
     const [currentPage, setCurrentPage] = useState<number>(1); // Track the current page
     const rowsPerPage = 10; // Number of rows displayed per page
@@ -28,8 +31,8 @@ export default function RolesTable() {
 
     const fetchData = async () => {
         setLoading(true);
-        // Fetch the roles data sorted by id in descending order
-        const { data, error } = await supabase.from('roles').select('*').order('id', { ascending: false });
+        // Fetch the permissions data sorted by id in descending order
+        const { data, error } = await supabase.from('permissions').select('*').order('id', { ascending: false });
         if (error) {
             console.error(error);
         } else {
@@ -38,30 +41,30 @@ export default function RolesTable() {
         setLoading(false);
     };
 
-    // Function to handle deletion of a role
-    const deleteRole = (id: number) => {
-        setData((prev) => prev.filter((role) => role.id !== id)); // Remove deleted role from data
+    // Function to handle deletion of a row
+    const deleteRow = (id: number) => {
+        setData((prev) => prev.filter((row) => row.id !== id)); // Remove deleted row from data
     };
 
-    // Toggle role selection for bulk action
+    // Toggle permission selection for bulk action
     const toggleSelection = (id: number) => {
-        setSelectedRoles((prev) =>
-            prev.includes(id) ? prev.filter((roleId) => roleId !== id) : [...prev, id] // Add/remove the role ID from selected list
+        setSelectedPermissions((prev) =>
+            prev.includes(id) ? prev.filter((permissionId) => permissionId !== id) : [...prev, id] // Add/remove the permission ID from selected list
         );
     };
 
-    // Function to select all roles on the current page
+    // Function to select all permissions on the current page
     const toggleSelectAll = (selectAll: boolean) => {
         if (selectAll) {
-            // If selecting all, add the role IDs of the current page to selectedRoles
-            setSelectedRoles((prev) => [
+            // If selecting all, add the permission IDs of the current page to selectedPermissions
+            setSelectedPermissions((prev) => [
                 ...prev,
-                ...paginatedData.map((role) => role.id).filter((id) => !prev.includes(id)),
+                ...paginatedData.map((permission) => permission.id).filter((id) => !prev.includes(id)),
             ]);
         } else {
-            // Deselect all roles on the current page
-            setSelectedRoles((prev) =>
-                prev.filter((id) => !paginatedData.map((role) => role.id).includes(id))
+            // Deselect all permissions on the current page
+            setSelectedPermissions((prev) =>
+                prev.filter((id) => !paginatedData.map((permission) => permission.id).includes(id))
             );
         }
     };
@@ -77,31 +80,27 @@ export default function RolesTable() {
         setCurrentPage(newPage); // Update the current page when a button is clicked
     };
 
-    // Function to handle bulk actions (you can define actions here)
-    const handleBulkAction = async (action: string) => {
-        if (!selectedRoles.length) {
-            alert('Please select at least one role.');
+    // Function to handle bulk status change
+    const handleBulkStatusChange = async (status: string) => {
+        if (!selectedPermissions.length) {
+            alert('Please select at least one permission.');
             return;
         }
 
-        // Bulk action logic for roles (e.g., you can add a "delete" or "update" action here)
         try {
-            // Example: perform some bulk update based on selected roles
-            if (action === 'delete') {
-                const { error } = await supabase
-                    .from('roles')
-                    .delete()
-                    .in('id', selectedRoles);
+            const { error } = await supabase
+                .from('permissions')
+                .update({ status })
+                .in('id', selectedPermissions);
 
-                if (error) {
-                    console.error('Bulk delete error:', error);
-                    alert('Failed to delete roles. Please try again.');
-                } else {
-                    alert('Roles deleted successfully.');
-                    fetchData(); // Refresh data after bulk action
-                    setSelectedRoles([]); // Reset selection after action
-                    setBulkAction(null); // Reset bulk action
-                }
+            if (error) {
+                console.error('Bulk update error:', error);
+                alert('Failed to update statuses. Please try again.');
+            } else {
+                alert('Statuses updated successfully.');
+                fetchData(); // Refresh data after bulk update
+                setSelectedPermissions([]); // Reset selection after update
+                setBulkAction(null); // Reset bulk action
             }
         } catch (err) {
             console.error('Unexpected error:', err);
@@ -111,7 +110,7 @@ export default function RolesTable() {
     return (
         <div className="min-h-screen bg-blue-100 p-6">
             <div className="w-full mx-auto bg-white rounded-xl shadow-lg p-4">
-                <h1 className="text-xl font-bold mb-4 text-center text-blue-600">Role Management</h1>
+                <h1 className="text-xl font-bold mb-4 text-center text-blue-600">Permission Management</h1>
 
                 {/* Bulk Action Dropdown */}
                 <div className="mb-4 flex items-center justify-between">
@@ -122,9 +121,9 @@ export default function RolesTable() {
                             className="border border-blue-300 px-3 py-1 rounded text-black"
                             value={bulkAction || ''}
                             onChange={(e) => setBulkAction(e.target.value)}
-                            disabled={!selectedRoles?.length}
+                            disabled={!selectedPermissions?.length}
                         >
-                            <option value="" disabled={!selectedRoles}>
+                            <option value="" disabled={!selectedPermissions}>
                                 Bulk Action
                             </option>
                             <option value="active">Set Active</option>
@@ -135,7 +134,7 @@ export default function RolesTable() {
                             variant="secondary"
                             className="h-[40px] rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
                             disabled={!bulkAction}
-                            onClick={() => handleBulkAction(bulkAction!)}
+                            onClick={() => handleBulkStatusChange(bulkAction!)}
                         >
                             Apply
                         </Button>
@@ -144,12 +143,11 @@ export default function RolesTable() {
                         type="button"
                         variant="secondary"
                         className="h-[40px] rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-                        onClick={() => router.push("/roles/add")}
+                        onClick={() => router.push("/permissions/add")}
                     >
-                        Add User
+                        Add Permission
                     </Button>
                 </div>
-
 
                 {/* Loading Indicator */}
                 {loading ? (
@@ -164,38 +162,46 @@ export default function RolesTable() {
                                         <input
                                             type="checkbox"
                                             onChange={(e) => toggleSelectAll(e.target.checked)}
-                                            checked={paginatedData.every((role) => selectedRoles.includes(role.id))}
+                                            checked={paginatedData.every((row) => selectedPermissions.includes(row.id))}
                                         />
                                     </th>
-                                    <th className="px-4 py-2 border text-black">Role Name</th>
+                                    <th className="px-4 py-2 border text-black">Name</th>
+                                    <th className="px-4 py-2 border text-black">Type</th>
+                                    <th className="px-4 py-2 border text-black">Category</th>
                                     <th className="px-4 py-2 border text-black">Description</th>
                                     <th className="px-4 py-2 border text-black">Updated At</th>
                                     <th className="px-4 py-2 border text-black">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {paginatedData.map((role) => (
-                                    <tr key={role.id} className="hover:bg-blue-50">
+                                {paginatedData.map((row) => (
+                                    <tr key={row.name} className="hover:bg-blue-50">
                                         <td className="px-4 py-2 border text-center">
                                             <input
                                                 type="checkbox"
-                                                checked={selectedRoles.includes(role.id)}
-                                                onChange={() => toggleSelection(role.id)}
+                                                checked={selectedPermissions.includes(row.id)}
+                                                onChange={() => toggleSelection(row.id)}
                                             />
                                         </td>
                                         <td className="px-4 py-2 border text-center text-blue-500">
-                                            <Link href={`/roles/${role.id}`}>
-                                                {role?.name || '-'}
+                                            <Link href={`/permissions/${row.name}`}>
+                                                {row?.name || '-'}
                                             </Link>
                                         </td>
                                         <td className="px-4 py-2 border text-center text-black">
-                                            {role?.description || '-'}
+                                            {row?.type || '-'}
                                         </td>
                                         <td className="px-4 py-2 border text-center text-black">
-                                            {role?.updated_at || '-'}
+                                            {row?.category || '-'}
+                                        </td>
+                                        <td className="px-4 py-2 border text-center text-black">
+                                            {row?.description || '-'}
+                                        </td>
+                                        <td className="px-4 py-2 border text-center text-black">
+                                            {row?.updated_at || '-'}
                                         </td>
                                         <td className="px-4 py-2 border text-center">
-                                            <RoleActions roleId={role.id} onDelete={deleteRole} />
+                                            <PermissionActions permissionId={row.id} onDelete={deleteRow} />
                                         </td>
                                     </tr>
                                 ))}
@@ -221,7 +227,7 @@ export default function RolesTable() {
                         variant="secondary"
                         className="h-[40px]  rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
                         onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={paginatedData.length < rowsPerPage}
+                        disabled={currentPage * rowsPerPage >= data.length}
                     >
                         Next
                     </Button>
@@ -231,60 +237,17 @@ export default function RolesTable() {
     );
 }
 
-
-export const RoleActions = ({ roleId, onDelete }) => {
-    const router = useRouter();
-
-    const roleOptions = [
-        { value: 'edit', label: 'Edit', isEnable: true },
-        { value: 'view', label: 'View', isEnable: true },
-        { value: 'delete', label: 'Delete', isEnable: true },
-    ];
-
-    const handleAction = async (action) => {
-        if (action === 'edit') {
-            router.push(`/roles/${roleId}/edit`);
-        } else if (action === 'view') {
-            router.push(`/roles/${roleId}`);
-        } else if (action === 'delete') {
-            const confirmDelete = window.confirm('Are you sure you want to delete this role?');
-            if (confirmDelete) {
-                onDelete(roleId);
-                const { error } = await supabase.from('roles').delete().eq('id', roleId);
-                if (error) {
-                    console.error(error);
-                }
-            }
-        }
-    };
-
+const PermissionActions = ({ permissionId, onDelete }: { permissionId: number; onDelete: Function }) => {
     return (
-       <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button
-                    variant="ghost"
-                    className="h-8 w-8 p-0 text-[#7677F4] hover:text-[#7677F4]"
-                >
-                    <MoreVertical className="h-6 w-6" />
-                </Button>
+        <DropdownMenu>
+            <DropdownMenuTrigger>
+                <MoreVertical className="cursor-pointer text-blue-600" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent
-                align="end"
-                className="max-h-[300px] max-w-[170px] overflow-y-auto text-[#333333] bg-white w-[100px] text-left"
-            >
-                {roleOptions?.map((option) => {
-                    if (option?.isEnable) {
-                        return (
-                            <DropdownMenuItem
-                                key={option?.value}
-                                className="cursor-pointer  hover:bg-blue-300 hover:text-white px-3 py-1 text-left"
-                                onClick={() => handleAction(option?.value)}
-                            >
-                                {option?.label}
-                            </DropdownMenuItem>
-                        );
-                    }
-                })}
+            <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => onDelete(permissionId)}>Delete</DropdownMenuItem>
+                <DropdownMenuItem>
+                    <Link href={`/permissions/edit/${permissionId}`}>Edit</Link>
+                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );

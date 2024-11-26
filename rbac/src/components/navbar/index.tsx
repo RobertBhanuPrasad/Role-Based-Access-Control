@@ -29,10 +29,9 @@ function Navbar() {
 
         {/* Desktop Menu */}
         <nav className="hidden md:flex space-x-6 text-gray-700">
-          <a href="/dashboard" className="hover:text-blue-500">Dashboard</a>
-          <a href="/users" className="hover:text-blue-500">Users</a>
-          <a href="/roles" className="hover:text-blue-500">Roles</a>
-          <a href="/permissions" className="hover:text-blue-500">Permissions</a>
+          <a href="/users/list" className="hover:text-blue-500">Users</a>
+          <a href="/roles/list" className="hover:text-blue-500">Roles</a>
+          <a href="/permissions/list" className="hover:text-blue-500">Permissions</a>
         </nav>
 
         {/* Profile Dropdown */}
@@ -53,13 +52,13 @@ function Navbar() {
               />
             </svg>
           </button>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-600">
             Logout
           </button>
         </div>
 
         {/* Mobile Menu */}
-        <div className="md:hidden">
+        <div className="md:hidden text-black">
           <button onClick={() => setIsMenuOpen(!isMenuOpen)} title="Menu">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -82,10 +81,9 @@ function Navbar() {
       {/* Mobile Menu Dropdown */}
       {isMenuOpen && (
         <div className="md:hidden bg-white shadow">
-          <a href="/dashboard" className="block px-4 py-2 hover:bg-gray-100">Dashboard</a>
-          <a href="/users/list" className="block px-4 py-2 hover:bg-gray-100">Users</a>
-          <a href="/roles/list" className="block px-4 py-2 hover:bg-gray-100">Roles</a>
-          <a href="/permissions/list" className="block px-4 py-2 hover:bg-gray-100">Permissions</a>
+          <a href="/users/list" className="block px-4 py-2 text-black hover:bg-blue-100">Users</a>
+          <a href="/roles/list" className="block px-4 py-2 text-black hover:bg-blue-100">Roles</a>
+          <a href="/permissions/list" className="block px-4 py-2 text-black hover:bg-blue-100">Permissions</a>
         </div>
       )}
     </header>

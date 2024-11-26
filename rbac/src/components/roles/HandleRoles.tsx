@@ -77,24 +77,6 @@ export const IsEditRole = (url: string) => {
 };
 
 /**
- * This function is used to determine whether the particular url contains copy-role or not
- * @param url
- * @returns a boolean
- */
-export const IsCopyRole = (url: string) => {
-  return url?.includes("/copy");
-};
-
-/**
- * This function is used to determine whether the particular url contains request-role or not
- * @param url
- * @returns a boolean
- */
-export const IsRequestRole = (url: string) => {
-  return url?.includes("/request");
-};
-
-/**
  * This function is used to determine whether the particular url contains add-role or not
  * @param url
  * @returns a boolean
@@ -103,11 +85,3 @@ export const IsNewRole = (url: string) => {
   return url?.includes("/add");
 };
 
-/**
- * This function is used to determine whether the particular url contains list-role or not
- * @param url
- * @returns a boolean
- */
-export const IsFindRole = (url: string) => {
-  return url?.includes("/list");
-};

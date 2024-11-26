@@ -1,5 +1,5 @@
 import Form from '@/components/FormField'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useFormContext, useController } from 'react-hook-form'
 import CloseEyeIcon from '../../../../public/asserts/closeEyeIcon'
 import OpenEyeIcon from '../../../../public/asserts/openEyeIcon'
@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/dialog'
 import { usersStore } from '@/ZustandStore/UsersStore'
 import { CreateUserSchema } from '@/components/users/CreateUserValidations'
+import { supabase } from '@/utility/SupabaseClient'
 // import Tick from "@public/assets/Tick.png";
 
 const index = () => {
@@ -44,11 +45,41 @@ export default index
 export const CreateUser = () => {
   console.log("bhanuindexrobert")
   const { usersData } = usersStore()
+  const [loading, setLoading] = useState(false);
+  const pathname =usePathname()
+  const { setRolesData}  = usersStore()
   const onSubmit = (data: unknown) => {
     console.log("formbhanudata", data);
   };
+  
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase.from('roles').select('*').order('id', { ascending: false });
+        if (error) {
+          console.error('Error fetching roles:', error);
+        } else {
+          setRolesData(data || []); // Ensure data is always an array
+        }
+      } catch (error) {
+        console.error('Unexpected error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const defaultValues = usersData;
+    fetchRoles();
+  }, []);
+
+  let defaultValues: any = {
+    // [CreateUserFormNames?.password]: "",
+  };
+
+  if(IsEditUser(pathname)){
+  defaultValues = usersData; //doubt check and update
+  }
+
   console.log(defaultValues, usersData, "defaultvalueaddbhanuprasadrobert")
   return (
     <div className="">
@@ -79,11 +110,12 @@ export const CreateUserPage = () => {
   const { watch } = useFormContext();
   const [statusUpdationDialogOpen, setStatusUpdationDialogOpen] =
     useState(false);
-    const { ValidateCurrentStepFields } = useValidateCurrentStepFields();
+  const [loading, setLoading] = useState(false);
+  const {rolesData} = usersStore()
+  const { ValidateCurrentStepFields } = useValidateCurrentStepFields();
   const [copiedUserCode, setCopiedUserCode] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-  const [loading, setLoading] = useState(false);
 
   const formData = watch();
 
@@ -95,6 +127,16 @@ export const CreateUserPage = () => {
       console.error("Failed to copy: ", err);
     }
   };
+
+
+  if (loading) {
+    return <p>Loading roles...</p>;
+  }
+
+
+
+
+  console.log(rolesData, "rolesdatabhanuprasad")
 
   const handleCopyDetailsPageLink = (textToCopy: string) => {
     copyText(textToCopy);
@@ -149,7 +191,7 @@ export const CreateUserPage = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg w-full max-w-[1200px] flex flex-col gap-8">
-        <div className="flex justify-center   py-4">
+        <div className="flex justify-center py-4">
           <p className="text-4xl font-semibold text-black">{IsEditUser(pathname)
             ? "Edit"
             : "Create"}{" "} User</p>
@@ -203,6 +245,7 @@ export const CreateUserPage = () => {
             Create User
           </Button>
         </div>
+
         {/* Dialog open */}
         <Dialog open={statusUpdationDialogOpen}>
           <DialogContent
@@ -596,19 +639,6 @@ export const GenerateUseCode = () => {
     onChange(userCodeArray?.[0]);
   }
 
-  // //this is used to show the validation error messages to the disocunt code
-  // useEffect(() => {
-  //   const validateDiscountCode = async () => {
-  //     const { data } = await supabaseClient()
-  //       .from("org_product_discount_code")
-  //       .select("discount_code")
-  //       .eq("discount_code", value);
-
-  //     setDiscountCodeValidation(data);
-  //   };
-  //   validateDiscountCode();
-  // }, [value, setDiscountCodeValidation]);
-
 
 
   return (
@@ -634,7 +664,7 @@ export const GenerateUseCode = () => {
             className="flex flex-[3] w-full items-center justify-center rounded-[12px] px-4 py-3 bg-blue-500 hover:bg-blue-700"
             type="button"
           >
-            Generate
+            Generate code
           </Button>
         </div>
       </div>
@@ -647,53 +677,84 @@ export const GenerateUseCode = () => {
   );
 };
 
-export const RoleDropDown = () => {
-  // use controller for role
-  const {
-    field: { value: role, onChange: onSelectedRole },
-  } = useController({
-    name: CreateUserFormNames?.role,
-  });
-
-
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-row items-center gap-1">
-        <Text className="text-xs font-normal text-[black]">
-          Role
-        </Text>{" "}
-        <Text className="text-[#7677F4]">*</Text>
+  
+  export const RoleDropDown = () => {
+    const { rolesData } = usersStore(); // Fetch roles data from the store
+  
+    const [pageSize, setPageSize] = useState(10);
+  
+    // UseController to handle form state for the role field
+    const {
+      field: { value: role, onChange: onSelectedRole },
+      fieldState: { error: roleError },
+    } = useController({
+      name: CreateUserFormNames?.role,
+    });
+  
+    // Filter and format roles data for dropdown
+    const validRoles = Array.isArray(rolesData)
+      ? rolesData
+          .filter((role) => role.name?.trim()) // Exclude roles with empty or null labels
+          .map((role) => ({
+            label: role.name, // Role name for display
+            value: role.id,   // Role ID for value
+          }))
+      : [];
+  
+    const handleSearch = (searchValue: string) => {
+      console.log("Search value:", searchValue);
+    };
+  
+    const handleOnBottomReached = () => {
+      if (rolesData.length >= pageSize) {
+        setPageSize((prevLimit) => prevLimit + 10);
+      }
+    };
+  
+    return (
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-row items-center gap-1">
+          <Text className="text-xs font-normal text-black">Role</Text>
+          <Text className="text-[#7677F4]">*</Text>
+        </div>
+        <div className="w-[300px]">
+          <MultiSelect
+            name="create-user-role-dropdown"
+            value={role} // Selected role
+            placeholder="Select the roles"
+            data={validRoles} // List of valid roles
+            onChange={(selectedValue) => {
+              console.log("Selected role:", selectedValue);
+              onSelectedRole(selectedValue); // Update form state
+            }}
+            onSearch={handleSearch} // Search handler
+            onBottomReached={handleOnBottomReached} // Pagination handler
+            getOptionProps={(option) => ({
+              disable: false, // Ensure options are clickable
+            })}
+            minLenToSearch={3}
+            searchPlaceholder="Type 3+ characters to search"
+            isInitialLoading={false}
+            isFiltering={false}
+            error={roleError}
+            variant="basic"
+            secured={true}
+            styles={{
+              option: {
+                cursor: "pointer", // Ensure options are clickable
+              },
+            }}
+          />
+          {roleError && (
+            <span className="text-xs font-semibold text-[#FF6D6D]">
+              {roleError.message}
+            </span>
+          )}
+        </div>
       </div>
-      <div className="w-[300px]">
-        <MultiSelect
-          value={role}
-          placeholder={"Select Role"}
-          // data={roleData}
-          onBottomReached={() => { }}
-          onChange={(val: any) => {
-            onSelectedRole(val);
-            modifyRoleFormData(val);
-            if (val?.includes(teacherRole)) {
-              setValue("root_product_teacher", [
-                {
-                  root_product_id: undefined,
-                  ttp_certification_type: undefined,
-                },
-              ]);
-            } else {
-              setValue("root_product_teacher", []);
-            }
-          }}
-          onSearch={() => { }}
-          searchBar={false}
-          variant="basic"
-        />
-      </div>
-    </div>
-  )
-}
-
-
+    );
+  };
+  
 
 export const StatusDropdown = () => {
   const {
@@ -724,7 +785,7 @@ export const StatusDropdown = () => {
           value={selectedStatus}
           onValueChange={(value) => handleChange(value)}
         >
-          <SelectTrigger className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-black" error={error ? true : false}>
+          <SelectTrigger className="w-full border border-gray-300 rounded-[12px] px-3 py-2 text-sm text-black" error={error ? true : false}>
             <SelectValue placeholder="Select Status" />
           </SelectTrigger>
           <SelectContent className="rounded-lg">
