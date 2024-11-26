@@ -1,10 +1,9 @@
 import React from 'react'
-import { CreateUserPage } from '../../add';
+import { CreateUser } from '../../add';
 import { useRouter } from "next/router";
 import { useEffect, useState } from 'react';
 import { usersStore } from '@/ZustandStore/UsersStore';
 import { handleUserDetails } from '@/components/users/HandleDefaultValues';
-import { useForm, FormProvider } from "react-hook-form";
 
 const index = () => {
   return (
@@ -20,7 +19,6 @@ export const EditUserPage = () => {
     usersData
   } = usersStore();
   const [isLoading, setIsLoading] = useState(true);
-  const methods = useForm();
   const {
     query: { id },
   }: any = useRouter();
@@ -54,8 +52,6 @@ export const EditUserPage = () => {
   }
 console.log(usersData, "userdataprasad")
     return (
-      <FormProvider {...methods}>
-      <CreateUserPage />
-    </FormProvider>
+      <CreateUser />
     )
 }

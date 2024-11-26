@@ -114,7 +114,7 @@ export const CreateUserPage = () => {
         .replace(/\/(edit)/, "");
       router.push(`${newPathUpdate}/list`);
     } else {
-      router.replace("/courses/discount-code/list");
+      router.replace("/users/list");
     }
   };
 
@@ -139,6 +139,7 @@ export const CreateUserPage = () => {
     const isAllFieldsValidated = await ValidateCurrentStepFields(
       newUserFormNames
     );
+    console.log(isAllFieldsValidated, "isallfieldsbhanuprasad")
     if(isAllFieldsValidated){
     await handleSubmitUserDetails(formData)
     setStatusUpdationDialogOpen(true);
@@ -332,6 +333,7 @@ export const FirstName = ({ index }: any) => {
           }}
           className="rounded-[12px] text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
           id={`step-6-contact-name-${index}`}
+          error={error ? true : false}
         />
         {error && (
           <span className="text-[12px] text-[#FF6D6D]">{error?.message}</span>
@@ -368,6 +370,7 @@ export const LastName = ({ index }: any) => {
           }}
           className="rounded-[12px] text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
           id={`step-6-contact-name-${index}`}
+          error={error ? true : false}
         />
         {error && (
           <span className="text-[12px] text-[#FF6D6D]">{error?.message}</span>
@@ -402,6 +405,7 @@ export const Email = ({ index }: any) => {
           }}
           className="rounded-[12px] text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
           id={`step-6-contact-name-${index}`}
+          error={error ? true : false}
         />
         {error && (
           <span className="text-[12px] text-[#FF6D6D]">{error?.message}</span>
@@ -435,6 +439,7 @@ export const Password = () => {
             e.stopPropagation();
             onPassword(e.target.value);
           }}
+          error={error ? true : false}
           placeholder="Enter password"
         />
         <span
@@ -562,7 +567,7 @@ export const AddressDetails = () => {
           onChange(val?.target?.value);
         }}
         placeholder="Enter the address"
-        className="w-full !rounded-xl text-sm font-normal placeholder:text-[#999999]"
+        className="w-full !rounded-xl text-sm font-normal placeholder:text-[black] text-black"
         error={error ? true : false}
       />
       {error && (
@@ -621,6 +626,7 @@ export const GenerateUseCode = () => {
               readOnly={true}
               value={value}
               className="w-full rounded-[12px]"
+              error={discountCodeError ? true : false}
             />
           </div>
           <Button
@@ -692,6 +698,7 @@ export const RoleDropDown = () => {
 export const StatusDropdown = () => {
   const {
     field: { value: selectedStatus, onChange: setSelectedStatus },
+    fieldState: {error}
   } = useController({
     name: CreateUserFormNames?.status,
   });
@@ -717,7 +724,7 @@ export const StatusDropdown = () => {
           value={selectedStatus}
           onValueChange={(value) => handleChange(value)}
         >
-          <SelectTrigger className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-black">
+          <SelectTrigger className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-black" error={error ? true : false}>
             <SelectValue placeholder="Select Status" />
           </SelectTrigger>
           <SelectContent className="rounded-lg">
@@ -733,6 +740,11 @@ export const StatusDropdown = () => {
           </SelectContent>
         </Select>
       </div>
+      {error && (
+        <span className="text-xs font-semibold text-[#FF6D6D]">
+          {error?.message}
+        </span>
+      )}
     </div>
   );
 };
