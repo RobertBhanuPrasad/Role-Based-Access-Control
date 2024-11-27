@@ -194,7 +194,7 @@ export default function CrudTable() {
                                         <td className="px-4 py-2 border text-center text-black">
                                             {row?.email || '-'}
                                         </td>
-                                        <td className={`px-4 py-2 border font-semibold text-center text-black ${row.status === 'active'
+                                        <td className={`px-4 py-2 border font-semibold text-center text-black ${row.status === 'Active'
                                             ? 'text-green-500'
                                             : 'text-red-500'
                                             }`}>
