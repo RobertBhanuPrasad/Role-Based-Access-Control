@@ -580,6 +580,9 @@ export const Password = () => {
           {passwordShow ? <CloseEyeIcon /> : <OpenEyeIcon />}
         </span>
       </div>
+      {error && (
+          <span className="text-[12px] text-[#FF6D6D]">{error?.message}</span>
+        )}
     </div>
   )
 }
@@ -738,7 +741,7 @@ export const RoleDropDown = () => {
 
   // UseController hook to manage form state
   const {
-    field: { value, onChange },
+    field: { value = [], onChange },
     fieldState: { error },
   } = useController({
     name: 'role', // Form field name for the role

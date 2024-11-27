@@ -27,7 +27,11 @@ const CreatePermission = () => {
     console.log("form data", data);
   };
   const { permissionsDefaultData } = usersStore()
-  const defaultValues = permissionsDefaultData
+  
+  let  defaultValues = {}
+
+  defaultValues = permissionsDefaultData
+
   console.log(defaultValues, permissionsDefaultData, "defaultvaluespermissions")
   return (
     <div className="">

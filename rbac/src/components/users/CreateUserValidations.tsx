@@ -25,51 +25,43 @@ export const CreateUserSchema = z.object({
   password: z
     .string({
       required_error: 'Password is required',
+      invalid_type_error: 'Password is required',
+
     })
+    .nonempty({
+        message: 'Password is required',
+      })
     .min(8, { message: 'Password must be at least 8 characters long' })
     .max(100, { message: 'Password cannot exceed 100 characters' })
     .regex(/[a-zA-Z]/, { message: 'Password must contain at least one letter' })
     .regex(/[0-9]/, { message: 'Password must contain at least one number' }),
 
-  status: z
-    .enum(['active', 'inactive'], {
-      required_error: 'Status is required',
-      invalid_type_error: 'Status must be a string',
-    })
-    .default('active'),
-
-  full_name: z
-    .string({
-      required_error: 'Full name is required',
-    })
-    .min(1, { message: 'Full name is required' })
-    .max(100, { message: 'Full name must be less than 100 characters' }),
-
-  role: z
-    .array(
-      z.enum(['admin', 'user', 'manager'], {
-        required_error: 'Role is required',
-        invalid_type_error: 'Role must be one of admin, user, or manager',
-      })
-    )
-    .nonempty({
-      message: 'Role is required',
-    })
-    .optional(),
+  status:z.string({
+    required_error: "Status required",
+    invalid_type_error: "Status required",
+  }),
 
 
-  permissions: z
-    .array(
-      z.enum(['read', 'write', 'execute'], {
-        required_error: 'Permission is required',
-        invalid_type_error: 'Permission must be one of read, write, or execute',
-      })
-    )
-    .nonempty({
-      message: 'Permission is required',
-    })
-    .optional(),
+  // role :z
+  // .array(
+  //   z.string({
+  //     required_error: "Role required"
+  //   })
+  // )
+  // .nonempty({
+  //   message: "Role required",
+  // }),
 
+
+  // permissions :z
+  // .array(
+  //   z.string({
+  //     required_error: "Permission is required"
+  //   })
+  // )
+  // .nonempty({
+  //   message: "Permission is required",
+  // }),
 
   user_code: z
     .string({

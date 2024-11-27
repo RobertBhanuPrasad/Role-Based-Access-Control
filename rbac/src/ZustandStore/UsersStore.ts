@@ -47,7 +47,7 @@ export const usersStore = create<UsersStore>((set) => ({
 
     setPermissionsDefaultData: (data: any) => {
         set(() => ({
-            roleDefaultData: data
+            permissionsDefaultData: data
         }));
     },
 
