@@ -515,6 +515,7 @@ export const Email = ({ index }: any) => {
 
 export const Password = () => {
   const [passwordShow, setPasswordShow] = useState(false);
+  const pathname = usePathname()
   const {
     field: { value: password, onChange: onPassword },
     fieldState: { error },
@@ -538,6 +539,7 @@ export const Password = () => {
             onPassword(e.target.value);
           }}
           error={error ? true : false}
+          disabled={IsEditUser(pathname)}
           placeholder="Enter password"
         />
         <span
