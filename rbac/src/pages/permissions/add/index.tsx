@@ -100,7 +100,6 @@ export const CreatPermissionsPage = () => {
 
 
   const handleCreatePermission = async (NewPermissionStepFields: any[]) => {
-    setLoading(true)
 
     // Validate fields in the current step before proceeding
     const isAllFieldsValidated = await ValidateCurrentStepFields(

@@ -249,7 +249,6 @@ export const UserActions = ({ userId, onDelete }) => {
 
     const userOptions = [
         { value: 'edit', label: 'Edit', isEnable: true },
-        { value: 'view', label: 'View', isEnable: true },
         { value: 'create', label: 'Create', isEnable: true },
         { value: 'delete', label: 'Delete', isEnable: true },
     ];

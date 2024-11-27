@@ -4,7 +4,6 @@ import { MoreVertical } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@radix-ui/react-dropdown-menu';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 
 interface Role {
     id: number;
@@ -16,8 +15,6 @@ export default function RolesTable() {
     const router = useRouter()
     const [data, setData] = useState<Role[]>([]);
     const [loading, setLoading] = useState(true);
-    const [selectedRoles, setSelectedRoles] = useState<number[]>([]); // Stores selected role IDs
-    const [bulkAction, setBulkAction] = useState<string | null>(null); // Tracks dropdown action
     const [currentPage, setCurrentPage] = useState<number>(1); // Track the current page
     const rowsPerPage = 10; // Number of rows displayed per page
 
@@ -43,29 +40,6 @@ export default function RolesTable() {
         setData((prev) => prev.filter((role) => role.id !== id)); // Remove deleted role from data
     };
 
-    // Toggle role selection for bulk action
-    const toggleSelection = (id: number) => {
-        setSelectedRoles((prev) =>
-            prev.includes(id) ? prev.filter((roleId) => roleId !== id) : [...prev, id] // Add/remove the role ID from selected list
-        );
-    };
-
-    // Function to select all roles on the current page
-    const toggleSelectAll = (selectAll: boolean) => {
-        if (selectAll) {
-            // If selecting all, add the role IDs of the current page to selectedRoles
-            setSelectedRoles((prev) => [
-                ...prev,
-                ...paginatedData.map((role) => role.id).filter((id) => !prev.includes(id)),
-            ]);
-        } else {
-            // Deselect all roles on the current page
-            setSelectedRoles((prev) =>
-                prev.filter((id) => !paginatedData.map((role) => role.id).includes(id))
-            );
-        }
-    };
-
     // Paginated Data based on the current page
     const paginatedData = data.slice(
         (currentPage - 1) * rowsPerPage, // Start index for the current page
@@ -77,69 +51,13 @@ export default function RolesTable() {
         setCurrentPage(newPage); // Update the current page when a button is clicked
     };
 
-    // Function to handle bulk actions (you can define actions here)
-    const handleBulkAction = async (action: string) => {
-        if (!selectedRoles.length) {
-            alert('Please select at least one role.');
-            return;
-        }
-
-        // Bulk action logic for roles (e.g., you can add a "delete" or "update" action here)
-        try {
-            // Example: perform some bulk update based on selected roles
-            if (action === 'delete') {
-                const { error } = await supabase
-                    .from('roles')
-                    .delete()
-                    .in('id', selectedRoles);
-
-                if (error) {
-                    console.error('Bulk delete error:', error);
-                    alert('Failed to delete roles. Please try again.');
-                } else {
-                    alert('Roles deleted successfully.');
-                    fetchData(); // Refresh data after bulk action
-                    setSelectedRoles([]); // Reset selection after action
-                    setBulkAction(null); // Reset bulk action
-                }
-            }
-        } catch (err) {
-            console.error('Unexpected error:', err);
-        }
-    };
 
     return (
         <div className="min-h-screen bg-blue-100 p-6">
             <div className="w-full mx-auto bg-white rounded-xl shadow-lg p-4">
                 <h1 className="text-xl font-bold mb-4 text-center text-blue-600">Role Management</h1>
 
-                {/* Bulk Action Dropdown */}
                 <div className="mb-4 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <label htmlFor="bulkAction" className="sr-only">Bulk Action</label>
-                        <select
-                            id="bulkAction"
-                            className="border border-blue-300 px-3 py-1 rounded text-black"
-                            value={bulkAction || ''}
-                            onChange={(e) => setBulkAction(e.target.value)}
-                            disabled={!selectedRoles?.length}
-                        >
-                            <option value="" disabled={!selectedRoles}>
-                                Bulk Action
-                            </option>
-                            <option value="active">Set Active</option>
-                            <option value="inactive">Set Inactive</option>
-                        </select>
-                        <Button
-                            type="button"
-                            variant="secondary"
-                            className="h-[40px] rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-                            disabled={!bulkAction}
-                            onClick={() => handleBulkAction(bulkAction!)}
-                        >
-                            Apply
-                        </Button>
-                    </div>
                     <Button
                         type="button"
                         variant="secondary"
@@ -150,7 +68,6 @@ export default function RolesTable() {
                     </Button>
                 </div>
 
-
                 {/* Loading Indicator */}
                 {loading ? (
                     <p className="text-center text-blue-600">Loading...</p>
@@ -160,13 +77,6 @@ export default function RolesTable() {
                         <table className="w-full table-auto border border-blue-300">
                             <thead className="bg-blue-200">
                                 <tr>
-                                    <th className="px-4 py-2 border text-black">
-                                        <input
-                                            type="checkbox"
-                                            onChange={(e) => toggleSelectAll(e.target.checked)}
-                                            checked={paginatedData.every((role) => selectedRoles.includes(role.id))}
-                                        />
-                                    </th>
                                     <th className="px-4 py-2 border text-black">Role Name</th>
                                     <th className="px-4 py-2 border text-black">Description</th>
                                     <th className="px-4 py-2 border text-black">Updated At</th>
@@ -176,15 +86,8 @@ export default function RolesTable() {
                             <tbody>
                                 {paginatedData.map((role) => (
                                     <tr key={role.id} className="hover:bg-blue-50">
-                                        <td className="px-4 py-2 border text-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedRoles.includes(role.id)}
-                                                onChange={() => toggleSelection(role.id)}
-                                            />
-                                        </td>
                                         <td className="px-4 py-2 border text-center text-blue-500">
-                                                {role?.name || '-'}
+                                            {role?.name || '-'}
                                         </td>
                                         <td className="px-4 py-2 border text-center text-black">
                                             {role?.description || '-'}
@@ -235,7 +138,7 @@ export const RoleActions = ({ roleId, onDelete }) => {
 
     const roleOptions = [
         { value: 'edit', label: 'Edit', isEnable: true },
-        { value: 'view', label: 'View', isEnable: true },
+        { value: 'create', label: 'Create', isEnable: true },
         { value: 'delete', label: 'Delete', isEnable: true },
     ];
 
@@ -261,7 +164,7 @@ export const RoleActions = ({ roleId, onDelete }) => {
             <DropdownMenuTrigger asChild>
                 <Button
                     variant="ghost"
-                    className="h-8 w-8 p-0 text-[#7677F4] hover:text-[#7677F4]"
+                    className="h-8 w-8 p-0 text-blue-500 hover:text-blue-500"
                 >
                     <MoreVertical className="h-6 w-6" />
                 </Button>
