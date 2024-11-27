@@ -7,6 +7,10 @@
   --foreground: #171717;
 }
 
+.shared-dialog-styles {
+  @apply w-full max-w-[480px] h-auto sm:h-[400px] sm:w-[484px] rounded-[15px] p-6;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;

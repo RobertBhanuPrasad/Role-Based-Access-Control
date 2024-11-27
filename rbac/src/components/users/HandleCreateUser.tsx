@@ -7,7 +7,8 @@ type UserBody = {
   email?: string;
   first_name?: string;
   last_name?: string;
-  role?: string;
+  role?: string[];
+  permissions: string[];
   status?: string;
   full_name?: string;
   user_code?: string;
@@ -50,6 +51,10 @@ export const handleSubmitUserDetails = async (data: UserBody) => {
 
     if (data?.role) {
       userBody.role = data?.role;
+    }
+
+    if (data?.permissions) {
+      userBody.permissions = data?.permissions;
     }
 
     if (data?.user_code) {

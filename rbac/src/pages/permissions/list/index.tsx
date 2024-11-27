@@ -145,7 +145,7 @@ export default function CrudTable() {
                         className="h-[40px] rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
                         onClick={() => router.push("/permissions/add")}
                     >
-                        Add Permission
+                        Create Permission
                     </Button>
                 </div>
 
@@ -184,9 +184,7 @@ export default function CrudTable() {
                                             />
                                         </td>
                                         <td className="px-4 py-2 border text-center text-blue-500">
-                                            <Link href={`/permissions/${row.name}`}>
                                                 {row?.name || '-'}
-                                            </Link>
                                         </td>
                                         <td className="px-4 py-2 border text-center text-black">
                                             {row?.type || '-'}

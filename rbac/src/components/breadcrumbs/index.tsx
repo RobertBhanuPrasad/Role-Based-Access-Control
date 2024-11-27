@@ -21,11 +21,16 @@ export const Breadcrumb = () => {
                 className: "",
                 href: "/users/list",
             },
+            {
+                label: "Find Users",
+                className: "",
+                href: "",
+            },
         ],
         "/users/add": [
             {
                 label: "Users",
-                className: "text-primary cursor-pointer",
+                className: "text-blue-500 cursor-pointer",
                 href: "/users/list",
             },
             {
@@ -37,7 +42,7 @@ export const Breadcrumb = () => {
         "/users/[id]/edit": [
             {
                 label: "Users",
-                className: "text-primary cursor-pointer",
+                className: "text-blue-500 cursor-pointer",
                 href: "/users/list",
             },
             {
@@ -54,11 +59,16 @@ export const Breadcrumb = () => {
                 className: "",
                 href: "/roles/list",
             },
+            {
+                label: "Find Roles",
+                className: "",
+                href: "",
+            },
         ],
         "/roles/add": [
             {
                 label: "Roles",
-                className: "text-primary cursor-pointer",
+                className: "text-blue-500 cursor-pointer",
                 href: "/roles/list",
             },
             {
@@ -70,7 +80,7 @@ export const Breadcrumb = () => {
         "/roles/[id]/edit": [
             {
                 label: "Roles",
-                className: "text-primary cursor-pointer",
+                className: "text-blue-500 cursor-pointer",
                 href: "/roles/list",
             },
             {
@@ -87,11 +97,16 @@ export const Breadcrumb = () => {
                 className: "",
                 href: "/permissions/list",
             },
+            {
+                label: "Find Permissions",
+                className: "",
+                href: "",
+            },
         ],
         "/permissions/add": [
             {
                 label: "Permissions",
-                className: "text-primary cursor-pointer",
+                className: "text-blue-500 cursor-pointer",
                 href: "/permissions/list",
             },
             {
@@ -103,7 +118,7 @@ export const Breadcrumb = () => {
         "/permissions/[id]/edit": [
             {
                 label: "Permissions",
-                className: "text-primary cursor-pointer",
+                className: "text-blue-500 cursor-pointer",
                 href: "/permissions/list",
             },
             {

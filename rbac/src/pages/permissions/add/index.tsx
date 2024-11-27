@@ -142,7 +142,11 @@ export const CreatPermissionsPage = () => {
       <div className="flex flex-wrap justify-center gap-6 w-full items-center">
         {/* Card 1 */}
         <div className="w-full sm:w-[48%] lg:w-[40%] max-w-md bg-white p-6 shadow-md rounded-lg">
-          <h1 className="text-2xl text-blue-500 font-semibold text-center mb-6">Create Permission</h1>
+        <div className="flex justify-center py-4">
+          <p className="text-4xl text-blue-500 font-semibold text-center mb-6">{IsEditPermission(pathname)
+            ? "Edit"
+            : "Create"}{" "} Permission</p>
+        </div>
           <div className="flex flex-col gap-y-6">
             {/* Permission Name */}
             <div className="form-control flex flex-col">
@@ -232,11 +236,6 @@ export const CreatPermissionsPage = () => {
             </div>
           </div>
         </div>
-        {/* Card 2 */}
-        <div className="w-full sm:w-[48%] lg:w-[40%] max-w-md bg-white p-6 shadow-md rounded-lg">
-          <h1 className="text-2xl text-blue-500 font-semibold text-center mb-6">Create Permission</h1>
-          {/* Additional Content */}
-        </div>
       </div>
 
       {/* Dialog open */}
@@ -258,7 +257,6 @@ export const CreatPermissionsPage = () => {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className='pt-[100px] gap-3'>
-            {IsNewPermission(pathname) ? (
               <div className="flex w-full items-center justify-center gap-5">
                 {loading && (
                   <div className="fixed inset-0 z-50 flex items-center justify-center bg-[white]/50 opacity-100">
@@ -269,38 +267,25 @@ export const CreatPermissionsPage = () => {
                   <Button
                     type="button"
                     variant="outline"
-                    className="h-[46px] min-w-[142px] rounded-[12px] border border-[#7677F4] font-bold leading-5 text-[#7677F4]"
+                    className="h-[46px] min-w-[142px] rounded-[12px] border border-blue-500 font-bold leading-5 text-blue-500"
                     onClick={handleClickNew}
                     disabled={loading}
                   >
                     Create new
                   </Button>
                 </div>
-                <div>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    className="h-[46px] min-w-[210px] rounded-[12px] bg-[#7677F4] px-4 py-2 leading-5 text-white"
-                    onClick={handleClickFind}
-                    disabled={loading}
-                  >
-                    Find users
-                  </Button>
-                </div>
-              </div>
-            ) : (
               <div>
                 <Button
                   type="button"
                   variant="secondary"
-                  className="h-[46px] min-w-[210px] rounded-[12px] bg-[#7677F4] px-4 py-2 leading-5 text-white"
+                  className="h-[46px] min-w-[210px] rounded-[12px] bg-blue-500 px-4 py-2 leading-5 text-white"
                   onClick={handleClickFind}
                   disabled={loading}
                 >
                   Go to Find Roles Page
                 </Button>
               </div>
-            )}
+              </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>

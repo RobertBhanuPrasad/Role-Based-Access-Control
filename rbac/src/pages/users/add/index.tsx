@@ -7,8 +7,9 @@ import OpenEyeIcon from '../../../../public/asserts/openEyeIcon'
 import { Button } from '@/components/ui/button'
 import { Text } from '@/components/ui/TextTags'
 import { Input } from '@/components/ui/input'
+import MultipleSelector from '@/components/ui/MultiSelect'
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
-import { MultiSelect } from '@/components/ui/multi-select'
+import _ from "lodash";
 import { CreateUserFormNames } from '@/constants/CreateUserConstants'
 import { Textarea } from '@/components/ui/textarea'
 import { generate } from "referral-codes";
@@ -34,6 +35,7 @@ import * as SelectPrimitive from "@radix-ui/react-select";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import RedReverseIcon from '../../../../public/asserts/RedReverseIcon'
+import Exclamation from '../../../../public/asserts/Exclamation'
 
 const index = () => {
   return (
@@ -48,23 +50,40 @@ export default index;
 
 export const CreateUser = () => {
   console.log("bhanuindexrobert")
-  const { usersData } = usersStore()
+  const { usersData, setRolesData, setPermissionsData } = usersStore()
   const [loading, setLoading] = useState(false);
   const pathname = usePathname()
-  const { setRolesData } = usersStore()
   const onSubmit = (data: unknown) => {
     console.log("formbhanudata", data);
   };
 
   useEffect(() => {
-    const fetchRoles = async () => {
+    const fetchRolesAndPermissions = async () => {
       try {
         setLoading(true);
-        const { data, error } = await supabase.from('roles').select('*').order('id', { ascending: false });
-        if (error) {
-          console.error('Error fetching roles:', error);
+
+        // Fetch roles
+        const { data: roles, error: rolesError } = await supabase
+          .from('roles')
+          .select('*')
+          .order('id', { ascending: false });
+
+        if (rolesError) {
+          console.error('Error fetching roles:', rolesError);
         } else {
-          setRolesData(data || []); // Ensure data is always an array
+          setRolesData(roles || []); // Ensure data is always an array
+        }
+
+        // Fetch permissions
+        const { data: permissions, error: permissionsError } = await supabase
+          .from('permissions')
+          .select('*')
+          .order('id', { ascending: false });
+
+        if (permissionsError) {
+          console.error('Error fetching permissions:', permissionsError);
+        } else {
+          setPermissionsData(permissions || []); // Ensure data is always an array
         }
       } catch (error) {
         console.error('Unexpected error:', error);
@@ -73,15 +92,14 @@ export const CreateUser = () => {
       }
     };
 
-    fetchRoles();
+    fetchRolesAndPermissions();
   }, []);
 
   let defaultValues: any = {
-    // [CreateUserFormNames?.password]: "",
   };
 
   if (IsEditUser(pathname)) {
-    defaultValues = usersData; //doubt check and update
+    defaultValues = usersData;
   }
 
   console.log(defaultValues, usersData, "defaultvalueaddbhanuprasadrobert")
@@ -111,9 +129,11 @@ const requireFeilds = () => {
 
 export const CreateUserPage = () => {
   console.log("robertcreate")
-  const { watch } = useFormContext();
+  const { watch, getValues } = useFormContext();
+  const { usersData } = usersStore()
   const [statusUpdationDialogOpen, setStatusUpdationDialogOpen] =
     useState(false);
+  const [cancelOpenDialog, setCancelOpenDialog] = useState(false);
   const [loading, setLoading] = useState(false);
   const { rolesData } = usersStore()
   const { ValidateCurrentStepFields } = useValidateCurrentStepFields();
@@ -192,11 +212,50 @@ export const CreateUserPage = () => {
     }
   }
 
+  const handleCancelClick = () => {
+    //if the formData from getValues and course accounting form values are same we will navigate to course accounting form tab
+    // it means no changes are made so we can back no problem
+    //if user changed anything we will open dialog box
+    const formData = getValues();
+
+    const isEqual =
+      _.isEqual(
+        formData?.program_expenses,
+        usersData
+      )
+
+    if (isEqual) {
+      // If no changes were made, proceed to navigate to the specified course page.
+      // The 'course_accounting_form' tab will be active, and 'is_cancel=true' is added to the URL.
+      // The 'is_cancel=true' parameter indicates that the form submission is complete,
+      // allowing the destination page to handle post-submission logic, like displaying a success message.
+      router.reload();
+    } else {
+      // if anything is changed we will open the dialog
+      setCancelOpenDialog(true);
+    }
+  }
+
+  const handleCancelDialogYesClick = () => {
+    setCancelOpenDialog(false);
+    // After confirming, navigate to the specified course page.
+    // The 'course_accounting_form' tab will be active, and 'is_cancel=true' is added to the URL.
+    // The 'is_cancel=true' parameter indicates that the form submission is complete,
+    // allowing the destination page to trigger any necessary post-submission actions,
+    // such as displaying a success message or processing form data.
+    router.reload()
+  };
+
+  const handleCancelDialogNoClick = () => {
+    setCancelOpenDialog(false);
+  };
+
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg w-full max-w-[1200px] flex flex-col gap-8">
         <div className="flex justify-center py-4">
-          <p className="text-4xl font-semibold text-black">{IsEditUser(pathname)
+          <p className="text-4xl text-blue-500 font-semibold text-center mb-6">{IsEditUser(pathname)
             ? "Edit"
             : "Create"}{" "} User</p>
         </div>
@@ -225,6 +284,7 @@ export const CreateUserPage = () => {
           <div className="min-h-20 w-80">
             <RoleDropDown />
           </div>
+          <div className="min-h-20 w-80"><PermissionsDropDown /></div>
           <div className="w-[310px] col-span-full lg:col-span-3">
             <AddressDetails />
           </div>
@@ -234,6 +294,7 @@ export const CreateUserPage = () => {
             type="button"
             variant="secondary"
             className="h-[46px] min-w-[150px] md:min-w-[210px] rounded-lg border-2 border-blue-500 px-4 py-2 text-blue-500 hover:bg-blue-100"
+            onClick={() => handleCancelClick()}
           >
             Cancel
           </Button>
@@ -301,49 +362,63 @@ export const CreateUserPage = () => {
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className='pt-6 gap-3'>
-              {IsNewUser(pathname) ? (
-                <div className="flex w-full items-center justify-center gap-5">
-                  {loading && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[white]/50 opacity-100">
-                      <div className="loader"></div>
-                    </div>
-                  )}
-                  <div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="h-[46px] min-w-[142px] rounded-[12px] border border-[#7677F4] font-bold leading-5 text-[#7677F4]"
-                      onClick={handleClickNew}
-                      disabled={loading}
-                    >
-                      Create new
-                    </Button>
+              <div className="flex w-full items-center justify-center gap-5">
+                {loading && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-[white]/50 opacity-100">
+                    <div className="loader"></div>
                   </div>
-                  <div>
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      className="h-[46px] min-w-[210px] rounded-[12px] bg-[#7677F4] px-4 py-2 leading-5 text-white"
-                      onClick={handleClickFind}
-                      disabled={loading}
-                    >
-                      Find users
-                    </Button>
-                  </div>
+                )}
+                <div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-[46px] min-w-[142px] rounded-[12px] border border-blue-500 font-bold leading-5 text-blue-500"
+                    onClick={handleClickNew}
+                    disabled={loading}
+                  >
+                    Create new
+                  </Button>
                 </div>
-              ) : (
                 <div>
                   <Button
                     type="button"
                     variant="secondary"
-                    className="h-[46px] min-w-[210px] rounded-[12px] bg-[#7677F4] px-4 py-2 leading-5 text-white"
+                    className="h-[46px] min-w-[210px] rounded-[12px] bg-blue-500 px-4 py-2 leading-5 text-white hover:bg-blue-700"
                     onClick={handleClickFind}
                     disabled={loading}
                   >
                     Go to Find Users Page
                   </Button>
                 </div>
-              )}
+              </div>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={cancelOpenDialog} onOpenChange={setCancelOpenDialog}>
+          <DialogContent className="flex w-[425px] flex-col !rounded-[15px] !p-6 bg-[white] text-black">
+            <DialogHeader>
+              <div className="flex w-full items-center justify-center">
+                <Exclamation />
+              </div>
+              <DialogDescription className="items-center text-center text-[20px] font-semibold text-[#333333]">
+                Are you sure you want to cancel the changes
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <div className="flex w-full items-center justify-center gap-5">
+                <Button
+                  onClick={handleCancelDialogNoClick}
+                  className="border border-[blue] bg-white text-[#7677F4]"
+                >
+                  no
+                </Button>
+                <Button
+                  className='bg-blue-500 text-white'
+                  onClick={handleCancelDialogYesClick}>
+                  Yes
+                </Button>
+              </div>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -645,222 +720,125 @@ export const GenerateUseCode = () => {
 };
 
 
-// export const RoleDropDown = () => {
-//   const { rolesData } = usersStore(); // Fetch roles data from the store
-
-//   const [pageSize, setPageSize] = useState(10);
-
-//   // UseController to handle form state for the role field
-//   const {
-//     field: { value: role, onChange: onSelectedRole },
-//     fieldState: { error: roleError },
-//   } = useController({
-//     name: CreateUserFormNames?.role,
-//   });
-
-//   // Filter and format roles data for dropdown
-//   const validRoles = Array.isArray(rolesData)
-//     ? rolesData
-//         .filter((role) => role.name?.trim()) // Exclude roles with empty or null labels
-//         .map((role) => ({
-//           label: role.name, // Role name for display
-//           value: role.id,   // Role ID for value
-//         }))
-//     : [];
-
-//   const handleSearch = (searchValue: string) => {
-//     console.log("Search value:", searchValue);
-//   };
-
-//   const handleOnBottomReached = () => {
-//     if (rolesData.length >= pageSize) {
-//       setPageSize((prevLimit) => prevLimit + 10);
-//     }
-//   };
-
-//   return (
-//     <div className="flex flex-col gap-2">
-//       <div className="flex flex-row items-center gap-1">
-//         <Text className="text-xs font-normal text-black">Role</Text>
-//         <Text className="text-[#7677F4]">*</Text>
-//       </div>
-//       <div className="w-[300px]">
-//         <MultiSelect
-//           name="create-user-role-dropdown"
-//           value={role} // Selected role
-//           placeholder="Select the roles"
-//           data={validRoles} // List of valid roles
-//           onChange={(selectedValue) => {
-//             console.log("Selected role:", selectedValue);
-//             onSelectedRole(selectedValue); // Update form state
-//           }}
-//           onSearch={handleSearch} // Search handler
-//           onBottomReached={handleOnBottomReached} // Pagination handler
-//           getOptionProps={(option) => ({
-//             disable: false, // Ensure options are clickable
-//           })}
-//           minLenToSearch={3}
-//           searchPlaceholder="Type 3+ characters to search"
-//           isInitialLoading={false}
-//           isFiltering={false}
-//           error={roleError}
-//           variant="basic"
-//           secured={true}
-//           styles={{
-//             option: {
-//               cursor: "pointer", // Ensure options are clickable
-//             },
-//           }}
-//         />
-//         {roleError && (
-//           <span className="text-xs font-semibold text-[#FF6D6D]">
-//             {roleError.message}
-//           </span>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
-
-
-
-
-
-// export const MultiSelectDropdown = ({ options }) => {
-//   const [selectedItems, setSelectedItems] = useState([]);
-
-//   const toggleSelection = (value) => {
-//     setSelectedItems((prev) =>
-//       prev.includes(value)
-//         ? prev.filter((item) => item !== value) // Deselect
-//         : [...prev, value] // Select
-//     );
-//   };
-
-//   return (
-//     <div className="w-full max-w-xs">
-//       <SelectPrimitive.Root>
-//         <SelectPrimitive.Trigger
-//           className={cn(
-//             "flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-black",
-//             "focus:outline-none focus:ring-2 focus:ring-blue-500"
-//           )}
-//         >
-//           <div className="truncate">
-//             {selectedItems.length > 0
-//               ? selectedItems.join(", ")
-//               : "Select options"}
-//           </div>
-//           <SelectPrimitive.Icon asChild>
-//             <ChevronDown className="h-4 w-4 opacity-50" />
-//           </SelectPrimitive.Icon>
-//         </SelectPrimitive.Trigger>
-//         <SelectPrimitive.Portal>
-//           <SelectPrimitive.Content className="rounded-lg border bg-white shadow-md">
-//             <SelectPrimitive.Viewport>
-//               {options.map((option) => (
-//                 <SelectPrimitive.Item
-//                   key={option.value}
-//                   value={option.value}
-//                   className="flex cursor-pointer select-none items-center gap-2 py-2 px-3 text-sm text-black hover:bg-gray-100"
-//                   onSelect={() => toggleSelection(option.value)}
-//                 >
-//                   <span className="flex h-4 w-4 items-center justify-center border rounded">
-//                     {selectedItems.includes(option.value) && (
-//                       <Check className="h-3 w-3" />
-//                     )}
-//                   </span>
-//                   {option.label}
-//                 </SelectPrimitive.Item>
-//               ))}
-//             </SelectPrimitive.Viewport>
-//           </SelectPrimitive.Content>
-//         </SelectPrimitive.Portal>
-//       </SelectPrimitive.Root>
-//     </div>
-//   );
-// };
-
-
-
 export const RoleDropDown = () => {
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const { rolesData } = usersStore()
-  const [searchQuery, setSearchQuery] = useState("");
+  const { rolesData } = usersStore(); // Assuming usersStore is fetching the roles data
+  console.log(rolesData, "rolesdatabhanurobert");
 
-  const toggleSelection = (value) => {
-    setSelectedItems((prev) =>
-      prev.includes(value)
-        ? prev.filter((item) => item !== value) // Deselect
-        : [...prev, value] // Select
-    );
-  };
+  // Process roles data
+  const validRoles = Array.isArray(rolesData)
+    ? rolesData
+      .filter((role) => role.name?.trim()) // Filter out invalid roles
+      .map((role) => ({
+        label: role.name,
+        value: role.name,
+      }))
+    : [];
 
-  const filteredOptions = rolesData?.filter((option) =>
-    option.label?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  console.log(validRoles, "validrolesrobert");
+
+  // UseController hook to manage form state
+  const {
+    field: { value, onChange },
+    fieldState: { error },
+  } = useController({
+    name: 'role', // Form field name for the role
+    defaultValue: [], // Set default value to an empty array
+  });
 
   return (
-    <div className="w-full max-w-xs">
-      <SelectPrimitive.Root>
-        <SelectPrimitive.Trigger
-          className={cn(
-            "flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-black",
-            "focus:outline-none focus:ring-2 focus:ring-blue-500"
-          )}
-        >
-          <div className="truncate">
-            {selectedItems.length > 0
-              ? selectedItems.join(", ")
-              : "Select options"}
-          </div>
-          <SelectPrimitive.Icon asChild>
-            <ChevronDown className="h-4 w-4 opacity-50" />
-          </SelectPrimitive.Icon>
-        </SelectPrimitive.Trigger>
-        <SelectPrimitive.Portal>
-          <SelectPrimitive.Content className="rounded-lg border bg-white shadow-md">
-            <div className="p-2">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="w-full rounded-md border border-gray-300 px-2 py-1 text-sm"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            <SelectPrimitive.Viewport>
-              {filteredOptions?.length > 0 ? (
-                filteredOptions?.map((option) => (
-                  <SelectPrimitive.Item
-                    key={option.value}
-                    value={option.value}
-                    className="flex cursor-pointer select-none items-center gap-2 py-2 px-3 text-sm text-black hover:bg-gray-100"
-                    onSelect={() => toggleSelection(option.value)}
-                  >
-                    <span className="flex h-4 w-4 items-center justify-center border rounded">
-                      {selectedItems.includes(option.value) && (
-                        <Check className="h-3 w-3" />
-                      )}
-                    </span>
-                    {option?.label}
-                  </SelectPrimitive.Item>
-                ))
-              ) : (
-                <div className="px-3 py-2 text-sm text-gray-500">
-                  No options found
-                </div>
-              )}
-            </SelectPrimitive.Viewport>
-          </SelectPrimitive.Content>
-        </SelectPrimitive.Portal>
-      </SelectPrimitive.Root>
+    <div className="flex flex-col gap-2 text-black">
+      <div className="flex flex-row items-center gap-1">
+        <Text className="text-xs font-normal text-[#333333]">Roles</Text>
+        <Text className="text-[#7677F4]">*</Text>
+      </div>
+
+      <MultipleSelector
+        options={validRoles}
+        placeholder="Select roles you like..."
+        value={value}  // Bind value to form state
+        onChange={(selected) => {
+          onChange(selected); // Store the selected values in form data
+        }}
+        className="rounded-[12px] text-[14px] text-black bg-gray-50 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        emptyIndicator={
+          <p className="text-center text-sm md:text-base lg:text-lg leading-10 text-gray-600 dark:text-gray-400">
+            No results found.
+          </p>
+        }
+        maxSelected={5}  // Limit the number of roles that can be selected
+      // You can add more props such as onSearch, loadingIndicator, etc.
+      />
+
+      {/* Error Message Display */}
+      {error && (
+        <span className="text-[12px] text-[#FF6D6D]">
+          {error?.message}
+        </span>
+      )}
     </div>
   );
 };
 
 
+
+export const PermissionsDropDown = () => {
+  const { permissionsData } = usersStore(); // Assuming usersStore is fetching the roles data
+  console.log(permissionsData, "rolesdatabhanurobert");
+
+  // Process roles data
+  const validPermissions = Array.isArray(permissionsData)
+    ? permissionsData
+      .filter((role) => role.name?.trim()) // Filter out invalid roles
+      .map((role) => ({
+        label: role.name,
+        value: role.name,
+      }))
+    : [];
+
+  console.log(validPermissions, "validrolesrobert");
+
+  // UseController hook to manage form state
+  const {
+    field: { value, onChange },
+    fieldState: { error },
+  } = useController({
+    name: 'permissions', // Form field name for the role
+    defaultValue: [], // Set default value to an empty array
+  });
+
+  return (
+    <div className="flex flex-col gap-2 text-black">
+      <div className="flex flex-row items-center gap-1">
+        <Text className="text-xs font-normal text-[#333333]">Permissions</Text>
+        <Text className="text-[#7677F4]">*</Text>
+      </div>
+
+      <MultipleSelector
+        options={validPermissions}
+        placeholder="Select permissions you like..."
+        value={value}  // Bind value to form state
+        onChange={(selected) => {
+          onChange(selected); // Store the selected values in form data
+        }}
+        className="rounded-[12px] text-[14px] text-black bg-gray-50 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        emptyIndicator={
+          <p className="text-center text-sm md:text-base lg:text-lg leading-10 text-gray-600 dark:text-gray-400">
+            No results found.
+          </p>
+        }
+        maxSelected={5}  // Limit the number of roles that can be selected
+      // You can add more props such as onSearch, loadingIndicator, etc.
+      />
+
+      {/* Error Message Display */}
+      {error && (
+        <span className="text-[12px] text-[#FF6D6D]">
+          {error?.message}
+        </span>
+      )}
+    </div>
+  );
+};
 
 
 export const StatusDropdown = () => {

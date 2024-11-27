@@ -45,12 +45,31 @@ export const CreateUserSchema = z.object({
     .min(1, { message: 'Full name is required' })
     .max(100, { message: 'Full name must be less than 100 characters' }),
 
-  // role: z
-  //   .enum(['admin', 'user', 'manager'], {
-  //     required_error: 'Role is required',
-  //     invalid_type_error: 'Role must be one of admin, user, or manager',
-  //   })
-  //   .default('user'),
+  role: z
+    .array(
+      z.enum(['admin', 'user', 'manager'], {
+        required_error: 'Role is required',
+        invalid_type_error: 'Role must be one of admin, user, or manager',
+      })
+    )
+    .nonempty({
+      message: 'Role is required',
+    })
+    .optional(),
+
+
+  permissions: z
+    .array(
+      z.enum(['read', 'write', 'execute'], {
+        required_error: 'Permission is required',
+        invalid_type_error: 'Permission must be one of read, write, or execute',
+      })
+    )
+    .nonempty({
+      message: 'Permission is required',
+    })
+    .optional(),
+
 
   user_code: z
     .string({

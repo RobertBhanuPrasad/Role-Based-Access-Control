@@ -1,4 +1,5 @@
 
+
 export const CreateUserFormNames = {
         first_name: "first_name",
         last_name: "last_name",
@@ -7,6 +8,7 @@ export const CreateUserFormNames = {
         status: "status",
         full_name: "full_name",
         role: "role",
+        permissions: "permissions",
         user_code: "user_code",
         address: "address",
         phone_number: "phone_number",     

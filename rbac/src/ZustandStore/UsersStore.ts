@@ -13,6 +13,9 @@ interface UsersStore {
 
     permissionsDefaultData: any;
     setPermissionsDefaultData: (by: any) => void;
+
+    permissionsData: any;
+    setPermissionsData: (by: any) => void;
 }
 
 
@@ -20,6 +23,7 @@ export const usersStore = create<UsersStore>((set) => ({
     usersData: null,
     rolesData: null,
     roleDefaultData: null,
+    permissionsData: null,
     permissionsDefaultData: null,
 
 
@@ -46,4 +50,11 @@ export const usersStore = create<UsersStore>((set) => ({
             roleDefaultData: data
         }));
     },
+
+    setPermissionsData: (data: any) => {
+        set(() => ({
+            permissionsData: data
+        }));
+    }
+    
     }));

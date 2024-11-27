@@ -146,7 +146,7 @@ export default function RolesTable() {
                         className="h-[40px] rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
                         onClick={() => router.push("/roles/add")}
                     >
-                        Add User
+                        Create Role
                     </Button>
                 </div>
 
@@ -184,9 +184,7 @@ export default function RolesTable() {
                                             />
                                         </td>
                                         <td className="px-4 py-2 border text-center text-blue-500">
-                                            <Link href={`/roles/${role.id}`}>
                                                 {role?.name || '-'}
-                                            </Link>
                                         </td>
                                         <td className="px-4 py-2 border text-center text-black">
                                             {role?.description || '-'}
