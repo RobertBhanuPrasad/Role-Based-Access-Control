@@ -19,6 +19,7 @@ import { useRouter } from "next/router";
 import { usePathname } from 'next/navigation'
 import { CreateRoleSchema } from '@/components/roles/RolesValidations'
 import { usersStore } from '@/ZustandStore/UsersStore'
+import RedReverseIcon from '../../../../public/asserts/RedReverseIcon'
 
 
 const index = (): JSX.Element => {
@@ -30,15 +31,15 @@ export const CreateRole = () => {
   const onSubmit = (data: unknown) => {
     console.log("form data", data);
   };
-  const {roleDefaultData} = usersStore()
-const defaultValues = roleDefaultData;
+  const { roleDefaultData } = usersStore()
+  const defaultValues = roleDefaultData;
   return (
     <div className="">
       <div>
         <Form onSubmit={onSubmit}
           schema={CreateRoleSchema}
           defaultValues={defaultValues}
-          >
+        >
           <CreateRolePage />
         </Form>
       </div>
@@ -117,7 +118,7 @@ export const CreateRolePage = () => {
     const isAllFieldsValidated = await ValidateCurrentStepFields(
       NewRoleStepFields
     );
-    
+
     if (isAllFieldsValidated) {
       await handleSubmitRoleDetails(formData)
       setStatusUpdationDialogOpen(true);
@@ -126,75 +127,139 @@ export const CreateRolePage = () => {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="w-full max-w-md bg-white p-6 shadow-md rounded-lg">
-        <h1 className="text-2xl text-blue-500 font-semibold text-center mb-6">Create Role</h1>
-        <div className="flex flex-col gap-y-6">
-          {/* Role Name */}
-          <div className="form-control flex flex-col">
-            <label htmlFor="roleName" className="label mb-2">
-              <span className="label-text text-[18px] sm:text-[20px] text-black">Role Name</span>
-            </label>
-            <Input
-              type="text"
-              id="roleName"
-              placeholder="Enter role name"
-              className="h-[40px] w-full rounded-[12px] text-black border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-500"
-              value={roleName}
-              onChange={onRoleName}
-            />
-            {roleError && (
-              <span className="text-[12px] text-[#FF6D6D]">{roleError?.message}</span>
-            )}
-          </div>
-
-          {/* Description */}
-          <div className="form-control flex flex-col">
-            <label htmlFor="description" className="label mb-2">
-              <span className="label-text text-[18px] sm:text-[20px] text-black">Description</span>
-            </label>
-            <Textarea
-              id="description"
-              placeholder="Enter description"
-              className="h-[80px] w-full rounded-[12px] text-black border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-500"
-              value={description}
-              onChange={onDescription}
-              required
-            />
-            {descriptionError && (
-              <span className="text-[12px] text-[#FF6D6D]">{descriptionError?.message}</span>
-            )}
-          </div>
-
-          {/* Submit Button */}
-          <div className="form-control flex justify-center mt-6">
-            <Button
-              type="button"
-              className="h-[46px] min-w-[106px] rounded-[12px] bg-blue-500 text-base font-bold"
-              onClick={async () => {
-                const validateRole = requireFeilds();
-                await handleCreateRole(validateRole[0])
-              }}
-              disabled={loading}
-            >
-              {loading && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-[white]/50 opacity-100">
-                  <div className="loader"></div>
-                </div>
+      <div className="flex flex-wrap justify-center gap-6 w-full p-4">
+        <div className="w-full max-w-md bg-white p-6 shadow-md rounded-lg">
+          <h1 className="text-2xl text-blue-500 font-semibold text-center mb-6">Create Role</h1>
+          <div className="flex flex-col gap-y-6">
+            {/* Role Name */}
+            <div className="form-control flex flex-col">
+              <label htmlFor="roleName" className="label mb-2">
+                <span className="label-text text-[18px] sm:text-[20px] text-black">Role Name</span>
+              </label>
+              <Input
+                type="text"
+                id="roleName"
+                placeholder="Enter role name"
+                className="h-[40px] w-full rounded-[12px] text-black border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-500"
+                value={roleName}
+                onChange={onRoleName}
+              />
+              {roleError && (
+                <span className="text-[12px] text-[#FF6D6D]">{roleError?.message}</span>
               )}
-              Create Role
-            </Button>
+            </div>
+
+            {/* Description */}
+            <div className="form-control flex flex-col">
+              <label htmlFor="description" className="label mb-2">
+                <span className="label-text text-[18px] sm:text-[20px] text-black">Description</span>
+              </label>
+              <Textarea
+                id="description"
+                placeholder="Enter description"
+                className="h-[80px] w-full rounded-[12px] text-black border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-500"
+                value={description}
+                onChange={onDescription}
+                required
+              />
+              {descriptionError && (
+                <span className="text-[12px] text-[#FF6D6D]">{descriptionError?.message}</span>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <div className="form-control flex justify-center mt-6">
+              <Button
+                type="button"
+                className="h-[46px] min-w-[106px] rounded-[12px] bg-blue-500 text-base font-bold"
+                onClick={async () => {
+                  const validateRole = requireFeilds();
+                  await handleCreateRole(validateRole[0]);
+                }}
+                disabled={loading}
+              >
+                {loading && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-[white]/50 opacity-100">
+                    <div className="loader"></div>
+                  </div>
+                )}
+                Create Role
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="w-full max-w-md bg-white p-6 shadow-md rounded-lg">
+          <h1 className="text-2xl text-blue-500 font-semibold text-center mb-6">Create Role</h1>
+          <div className="flex flex-col gap-y-6">
+            {/* Role Name */}
+            <div className="form-control flex flex-col">
+              <label htmlFor="roleName" className="label mb-2">
+                <span className="label-text text-[18px] sm:text-[20px] text-black">Role Name</span>
+              </label>
+              <Input
+                type="text"
+                id="roleName"
+                placeholder="Enter role name"
+                className="h-[40px] w-full rounded-[12px] text-black border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-500"
+                value={roleName}
+                onChange={onRoleName}
+              />
+              {roleError && (
+                <span className="text-[12px] text-[#FF6D6D]">{roleError?.message}</span>
+              )}
+            </div>
+
+            {/* Description */}
+            <div className="form-control flex flex-col">
+              <label htmlFor="description" className="label mb-2">
+                <span className="label-text text-[18px] sm:text-[20px] text-black">Description</span>
+              </label>
+              <Textarea
+                id="description"
+                placeholder="Enter description"
+                className="h-[80px] w-full rounded-[12px] text-black border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-500"
+                value={description}
+                onChange={onDescription}
+                required
+              />
+              {descriptionError && (
+                <span className="text-[12px] text-[#FF6D6D]">{descriptionError?.message}</span>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <div className="form-control flex justify-center mt-6">
+              <Button
+                type="button"
+                className="h-[46px] min-w-[106px] rounded-[12px] bg-blue-500 text-base font-bold"
+                onClick={async () => {
+                  const validateRole = requireFeilds();
+                  await handleCreateRole(validateRole[0]);
+                }}
+                disabled={loading}
+              >
+                {loading && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-[white]/50 opacity-100">
+                    <div className="loader"></div>
+                  </div>
+                )}
+                Create Role
+              </Button>
+            </div>
           </div>
         </div>
       </div>
+
       {/* Dialog open */}
       <Dialog open={statusUpdationDialogOpen}>
         <DialogContent
           closeIcon={false}
-          className="flex h-[394px] w-[484px] flex-col items-center justify-center !rounded-[15px] !p-4 bg-gray"
+          className="flex h-[394px] w-[484px] flex-col  !rounded-[15px] !p-4 bg-white"
         >
-          <DialogHeader>
+          <DialogHeader className='pt-10 gap-3'>
             <div className="flex w-full items-center justify-center">
-              {/* <Image src={Tick} alt="tick" /> */}
+              <RedReverseIcon />
             </div>
             <DialogDescription className="flex flex-col items-center gap-4 text-center text-[20px] font-semibold text-[#333333]">
               <div className="text-[20px] font-semibold">
@@ -204,7 +269,7 @@ export const CreateRolePage = () => {
               </div>
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
+          <DialogFooter className='pt-[100px] gap-3'>
             {IsNewRole(pathname) ? (
               <div className="flex w-full items-center justify-center gap-5">
                 {loading && (

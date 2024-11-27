@@ -19,27 +19,28 @@ import { CreatePermissionSchema } from '@/components/permissions/PermissionsVali
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 import { usersStore } from '@/ZustandStore/UsersStore';
+import RedReverseIcon from '../../../../public/asserts/RedReverseIcon';
 
 
 const CreatePermission = () => {
-    const onSubmit = (data: unknown) => {
-      console.log("form data", data);
-    };
-    const {permissionsDefaultData} = usersStore()
-    const defaultValues = permissionsDefaultData
-    console.log(defaultValues, permissionsDefaultData, "defaultvaluespermissions")
-    return (
-      <div className="">
-        <div>
-          <Form onSubmit={onSubmit}
+  const onSubmit = (data: unknown) => {
+    console.log("form data", data);
+  };
+  const { permissionsDefaultData } = usersStore()
+  const defaultValues = permissionsDefaultData
+  console.log(defaultValues, permissionsDefaultData, "defaultvaluespermissions")
+  return (
+    <div className="">
+      <div>
+        <Form onSubmit={onSubmit}
           schema={CreatePermissionSchema}
           defaultValues={defaultValues}
-          >
-              <CreatPermissionsPage/>
-          </Form>
-        </div>
+        >
+          <CreatPermissionsPage />
+        </Form>
       </div>
-    );
+    </div>
+  );
 }
 
 export default CreatePermission;
@@ -58,17 +59,17 @@ export const CreatPermissionsPage = () => {
   const { ValidateCurrentStepFields } = useValidateCurrentStepFields();
   const [statusUpdationDialogOpen, setStatusUpdationDialogOpen] =
     useState(false);
-    const router = useRouter();
-    const pathname = usePathname()
+  const router = useRouter();
+  const pathname = usePathname()
   const formData = getValues();
-  
+
   const {
     field: { value: permissionName, onChange: onPermissionName },
     fieldState: { error: permissionNameError },
   } = useController({
     name: PermissionsFormNames?.permissionName,
   });
-  
+
   // Use controller for permission description
   const {
     field: { value: description, onChange: onDescription },
@@ -76,7 +77,7 @@ export const CreatPermissionsPage = () => {
   } = useController({
     name: PermissionsFormNames?.description,
   });
-  
+
   // Use controller for permission type
   const {
     field: { value: permissionType, onChange: onPermissionType },
@@ -84,7 +85,7 @@ export const CreatPermissionsPage = () => {
   } = useController({
     name: PermissionsFormNames?.permissionType,
   });
-  
+
   // Use controller for permission category
   const {
     field: { value: permissionCategory, onChange: onPermissionCategory },
@@ -92,8 +93,8 @@ export const CreatPermissionsPage = () => {
   } = useController({
     name: PermissionsFormNames?.permissionCategory,
   });
-  
-  
+
+
   const handleCreatePermission = async (NewPermissionStepFields: any[]) => {
     setLoading(true)
 
@@ -138,139 +139,156 @@ export const CreatPermissionsPage = () => {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-    <div className="w-full max-w-md bg-white p-6 shadow-md rounded-lg">
-      <h1 className="text-2xl text-blue-500 font-semibold text-center mb-6">Create Permission</h1>
-      <div className="flex flex-col gap-y-6">
-        
-        {/* Permission Name */}
-        <div className="form-control flex flex-col">
-          <label htmlFor="permissionName" className="label mb-2">
-            <span className="label-text text-[18px] sm:text-[20px] text-black">Permission Name</span>
-          </label>
-          <Input
-            type="text"
-            id="permissionName"
-            placeholder="Enter permission name"
-            className="h-[40px] text-black w-full rounded-[12px] border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-500"
-            value={permissionName}
-            onChange={onPermissionName}
-          />
-          {permissionNameError && (
-            <span className="text-red-500 text-sm mt-2">{permissionNameError.message}</span>
-          )}
+      <div className="flex flex-wrap justify-center gap-6 w-full items-center">
+        {/* Card 1 */}
+        <div className="w-full sm:w-[48%] lg:w-[40%] max-w-md bg-white p-6 shadow-md rounded-lg">
+          <h1 className="text-2xl text-blue-500 font-semibold text-center mb-6">Create Permission</h1>
+          <div className="flex flex-col gap-y-6">
+            {/* Permission Name */}
+            <div className="form-control flex flex-col">
+              <label htmlFor="permissionName" className="label mb-2">
+                <span className="label-text text-[18px] sm:text-[20px] text-black">Permission Name</span>
+              </label>
+              <Input
+                type="text"
+                id="permissionName"
+                placeholder="Enter permission name"
+                className="h-[40px] text-black w-full rounded-[12px] border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-500"
+                value={permissionName}
+                onChange={onPermissionName}
+              />
+              {permissionNameError && (
+                <span className="text-red-500 text-sm mt-2">{permissionNameError.message}</span>
+              )}
+            </div>
+            {/* Permission Type */}
+            <div className="form-control flex flex-col">
+              <label htmlFor="permissionType" className="label mb-2">
+                <span className="label-text text-[18px] sm:text-[20px] text-black">Permission Type</span>
+              </label>
+              <Input
+                type="text"
+                id="permissionType"
+                placeholder="Enter permission type"
+                className="h-[40px] w-full text-black rounded-[12px] border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-500"
+                value={permissionType}
+                onChange={onPermissionType}
+              />
+              {permissionTypeError && (
+                <span className="text-red-500 text-sm mt-2">{permissionTypeError.message}</span>
+              )}
+            </div>
+            {/* Permission Category */}
+            <div className="form-control flex flex-col">
+              <label htmlFor="permissionCategory" className="label mb-2">
+                <span className="label-text text-[18px] sm:text-[20px] text-black">Permission Category</span>
+              </label>
+              <Input
+                type="text"
+                id="permissionCategory"
+                placeholder="Enter permission category"
+                className="h-[40px] w-full text-black rounded-[12px] border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-500"
+                value={permissionCategory}
+                onChange={onPermissionCategory}
+              />
+              {permissionCategoryError && (
+                <span className="text-red-500 text-sm mt-2">{permissionCategoryError.message}</span>
+              )}
+            </div>
+            {/* Description */}
+            <div className="form-control flex flex-col">
+              <label htmlFor="description" className="label mb-2">
+                <span className="label-text text-[18px] sm:text-[20px] text-black">Description</span>
+              </label>
+              <Textarea
+                id="description"
+                placeholder="Enter description"
+                className="h-[80px] w-full text-black rounded-[12px] border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-500"
+                value={description}
+                onChange={onDescription}
+              />
+              {descriptionError && (
+                <span className="text-red-500 text-sm mt-2">{descriptionError.message}</span>
+              )}
+            </div>
+            {/* Submit Button */}
+            <div className="form-control flex justify-center mt-6">
+              <Button
+                type="button"
+                className="h-[46px] min-w-[106px] rounded-[12px] bg-blue-500 hover:bg-blue-600 text-base font-bold"
+                onClick={async () => {
+                  const validatePermission = requireFeilds();
+                  await handleCreatePermission(validatePermission[0]);
+                }}
+                disabled={loading}
+              >
+                {loading && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-[white]/50 opacity-100">
+                    <div className="loader"></div>
+                  </div>
+                )}
+                Create Permission
+              </Button>
+            </div>
+          </div>
         </div>
-  
-        {/* Permission Type */}
-        <div className="form-control flex flex-col">
-          <label htmlFor="permissionType" className="label mb-2">
-            <span className="label-text text-[18px] sm:text-[20px] text-black">Permission Type</span>
-          </label>
-          <Input
-            type="text"
-            id="permissionType"
-            placeholder="Enter permission type"
-            className="h-[40px] w-full text-blackrounded-[12px] border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-500"
-            value={permissionType}
-            onChange={onPermissionType}
-          />
-          {permissionTypeError && (
-            <span className="text-red-500 text-sm mt-2">{permissionTypeError.message}</span>
-          )}
-        </div> 
-  
-        {/* Permission Category */}
-        <div className="form-control flex flex-col">
-          <label htmlFor="permissionCategory" className="label mb-2">
-            <span className="label-text  text-[18px] sm:text-[20px] text-black">Permission Category</span>
-          </label>
-          <Input
-            type="text"
-            id="permissionCategory"
-            placeholder="Enter permission category"
-            className="h-[40px] w-full text-black rounded-[12px] border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-500"
-            value={permissionCategory}
-            onChange={onPermissionCategory}
-          />
-          {permissionCategoryError && (
-            <span className="text-red-500 text-sm mt-2">{permissionCategoryError.message}</span>
-          )}
-        </div>
-  
-        {/* Description */}
-        <div className="form-control flex flex-col">
-          <label htmlFor="description" className="label mb-2">
-            <span className="label-text text-[18px] sm:text-[20px] text-black">Description</span>
-          </label>
-          <Textarea
-            id="description"
-            placeholder="Enter description"
-            className="h-[80px] w-full text-black rounded-[12px] border-[2px] border-gray-300 p-1 pl-[15px] outline-none focus:border-blue-500"
-            value={description}
-            onChange={onDescription}
-          />
-          {descriptionError && (
-            <span className="text-red-500 text-sm mt-2">{descriptionError.message}</span>
-          )}
-        </div>
-  
-        {/* Submit Button */}
-        <div className="form-control flex justify-center mt-6">
-          <Button
-            type="button"
-            className="h-[46px] min-w-[106px] rounded-[12px] bg-blue-500 hover:bg-blue-600 text-base font-bold"
-            onClick={async () => {
-              const validatePermission = requireFeilds();
-              await handleCreatePermission(validatePermission[0])
-            }}
-            disabled={loading}
-          >
-            {loading && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-[white]/50 opacity-100">
-                <div className="loader"></div>
-              </div>
-            )}
-            Create Permission
-          </Button>
+        {/* Card 2 */}
+        <div className="w-full sm:w-[48%] lg:w-[40%] max-w-md bg-white p-6 shadow-md rounded-lg">
+          <h1 className="text-2xl text-blue-500 font-semibold text-center mb-6">Create Permission</h1>
+          {/* Additional Content */}
         </div>
       </div>
-    </div>
-    {/* Dialog open */}
-    <Dialog open={statusUpdationDialogOpen}>
-      <DialogContent
-        closeIcon={false}
-        className="flex h-[394px] w-[484px] flex-col items-center justify-center !rounded-[15px] !p-4 bg-gray"
-      >
-        <DialogHeader>
-          <div className="flex w-full items-center justify-center">
-            {/* <Image src={Tick} alt="tick" /> */}
-          </div>
-          <DialogDescription className="flex flex-col items-center gap-4 text-center text-[20px] font-semibold text-[#333333]">
-            <div className="text-[20px] font-semibold">
-              {IsNewPermission(pathname)
-                ? "Your new Role has been successfully created"
-                : "Your Role has been successfully updated"}
+
+      {/* Dialog open */}
+      <Dialog open={statusUpdationDialogOpen}>
+        <DialogContent
+          closeIcon={false}
+          className="flex h-[394px] w-[484px] flex-col  !rounded-[15px] !p-4 bg-white"
+        >
+          <DialogHeader className='pt-10 gap-3'>
+            <div className="flex w-full items-center justify-center">
+              <RedReverseIcon />
             </div>
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          {IsNewPermission(pathname) ? (
-            <div className="flex w-full items-center justify-center gap-5">
-              {loading && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-[white]/50 opacity-100">
-                  <div className="loader"></div>
-                </div>
-              )}
-              <div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-[46px] min-w-[142px] rounded-[12px] border border-[#7677F4] font-bold leading-5 text-[#7677F4]"
-                  onClick={handleClickNew}
-                  disabled={loading}
-                >
-                  Create new
-                </Button>
+            <DialogDescription className="flex flex-col items-center gap-4 text-center text-[20px] font-semibold text-[#333333]">
+              <div className="text-[20px] font-semibold">
+                {IsNewPermission(pathname)
+                  ? "Your new Role has been successfully created"
+                  : "Your Role has been successfully updated"}
               </div>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className='pt-[100px] gap-3'>
+            {IsNewPermission(pathname) ? (
+              <div className="flex w-full items-center justify-center gap-5">
+                {loading && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-[white]/50 opacity-100">
+                    <div className="loader"></div>
+                  </div>
+                )}
+                <div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-[46px] min-w-[142px] rounded-[12px] border border-[#7677F4] font-bold leading-5 text-[#7677F4]"
+                    onClick={handleClickNew}
+                    disabled={loading}
+                  >
+                    Create new
+                  </Button>
+                </div>
+                <div>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="h-[46px] min-w-[210px] rounded-[12px] bg-[#7677F4] px-4 py-2 leading-5 text-white"
+                    onClick={handleClickFind}
+                    disabled={loading}
+                  >
+                    Find users
+                  </Button>
+                </div>
+              </div>
+            ) : (
               <div>
                 <Button
                   type="button"
@@ -279,27 +297,14 @@ export const CreatPermissionsPage = () => {
                   onClick={handleClickFind}
                   disabled={loading}
                 >
-                  Find users
+                  Go to Find Roles Page
                 </Button>
               </div>
-            </div>
-          ) : (
-            <div>
-              <Button
-                type="button"
-                variant="secondary"
-                className="h-[46px] min-w-[210px] rounded-[12px] bg-[#7677F4] px-4 py-2 leading-5 text-white"
-                onClick={handleClickFind}
-                disabled={loading}
-              >
-                Go to Find Roles Page
-              </Button>
-            </div>
-          )}
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  </main>  
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </main>
   );
 };
 

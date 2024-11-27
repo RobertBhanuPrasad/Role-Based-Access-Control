@@ -18,7 +18,6 @@ import { IsNewUser, IsCopyUser } from '@/components/users/HandleCreateUser'
 import { useRouter } from "next/router";
 import { usePathname } from 'next/navigation'
 import { useValidateCurrentStepFields } from '@/utility/ValidationStaps'
-// import Image from "next/image";
 import CopyIcon from '../../../../public/asserts/CopyIcon'
 import {
   Dialog,
@@ -34,6 +33,7 @@ import { supabase } from '@/utility/SupabaseClient'
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import RedReverseIcon from '../../../../public/asserts/RedReverseIcon'
 
 const index = () => {
   return (
@@ -50,12 +50,12 @@ export const CreateUser = () => {
   console.log("bhanuindexrobert")
   const { usersData } = usersStore()
   const [loading, setLoading] = useState(false);
-  const pathname =usePathname()
-  const { setRolesData}  = usersStore()
+  const pathname = usePathname()
+  const { setRolesData } = usersStore()
   const onSubmit = (data: unknown) => {
     console.log("formbhanudata", data);
   };
-  
+
   useEffect(() => {
     const fetchRoles = async () => {
       try {
@@ -80,8 +80,8 @@ export const CreateUser = () => {
     // [CreateUserFormNames?.password]: "",
   };
 
-  if(IsEditUser(pathname)){
-  defaultValues = usersData; //doubt check and update
+  if (IsEditUser(pathname)) {
+    defaultValues = usersData; //doubt check and update
   }
 
   console.log(defaultValues, usersData, "defaultvalueaddbhanuprasadrobert")
@@ -115,7 +115,7 @@ export const CreateUserPage = () => {
   const [statusUpdationDialogOpen, setStatusUpdationDialogOpen] =
     useState(false);
   const [loading, setLoading] = useState(false);
-  const {rolesData} = usersStore()
+  const { rolesData } = usersStore()
   const { ValidateCurrentStepFields } = useValidateCurrentStepFields();
   const [copiedUserCode, setCopiedUserCode] = useState(false);
   const router = useRouter();
@@ -186,9 +186,9 @@ export const CreateUserPage = () => {
       newUserFormNames
     );
     console.log(isAllFieldsValidated, "isallfieldsbhanuprasad")
-    if(isAllFieldsValidated){
-    await handleSubmitUserDetails(formData)
-    setStatusUpdationDialogOpen(true);
+    if (isAllFieldsValidated) {
+      await handleSubmitUserDetails(formData)
+      setStatusUpdationDialogOpen(true);
     }
   }
 
@@ -254,11 +254,11 @@ export const CreateUserPage = () => {
         <Dialog open={statusUpdationDialogOpen}>
           <DialogContent
             closeIcon={false}
-            className="flex h-[394px] w-[484px] flex-col items-center justify-center !rounded-[15px] !p-4"
+            className="flex h-[394px] w-[484px] flex-col  !rounded-[15px] !p-4 bg-white"
           >
-            <DialogHeader>
+            <DialogHeader className='pt-10 gap-3'>
               <div className="flex w-full items-center justify-center">
-                {/* <Image src={Tick} alt="tick" /> */}
+                <RedReverseIcon />
               </div>
               <DialogDescription className="flex flex-col items-center gap-4 text-center text-[20px] font-semibold text-[#333333]">
                 <div className="text-[20px] font-semibold">
@@ -300,7 +300,7 @@ export const CreateUserPage = () => {
                 </div>
               </DialogDescription>
             </DialogHeader>
-            <DialogFooter>
+            <DialogFooter className='pt-6 gap-3'>
               {IsNewUser(pathname) ? (
                 <div className="flex w-full items-center justify-center gap-5">
                   {loading && (
@@ -644,88 +644,88 @@ export const GenerateUseCode = () => {
   );
 };
 
-  
-  // export const RoleDropDown = () => {
-  //   const { rolesData } = usersStore(); // Fetch roles data from the store
-  
-  //   const [pageSize, setPageSize] = useState(10);
-  
-  //   // UseController to handle form state for the role field
-  //   const {
-  //     field: { value: role, onChange: onSelectedRole },
-  //     fieldState: { error: roleError },
-  //   } = useController({
-  //     name: CreateUserFormNames?.role,
-  //   });
-  
-  //   // Filter and format roles data for dropdown
-  //   const validRoles = Array.isArray(rolesData)
-  //     ? rolesData
-  //         .filter((role) => role.name?.trim()) // Exclude roles with empty or null labels
-  //         .map((role) => ({
-  //           label: role.name, // Role name for display
-  //           value: role.id,   // Role ID for value
-  //         }))
-  //     : [];
-  
-  //   const handleSearch = (searchValue: string) => {
-  //     console.log("Search value:", searchValue);
-  //   };
-  
-  //   const handleOnBottomReached = () => {
-  //     if (rolesData.length >= pageSize) {
-  //       setPageSize((prevLimit) => prevLimit + 10);
-  //     }
-  //   };
-  
-  //   return (
-  //     <div className="flex flex-col gap-2">
-  //       <div className="flex flex-row items-center gap-1">
-  //         <Text className="text-xs font-normal text-black">Role</Text>
-  //         <Text className="text-[#7677F4]">*</Text>
-  //       </div>
-  //       <div className="w-[300px]">
-  //         <MultiSelect
-  //           name="create-user-role-dropdown"
-  //           value={role} // Selected role
-  //           placeholder="Select the roles"
-  //           data={validRoles} // List of valid roles
-  //           onChange={(selectedValue) => {
-  //             console.log("Selected role:", selectedValue);
-  //             onSelectedRole(selectedValue); // Update form state
-  //           }}
-  //           onSearch={handleSearch} // Search handler
-  //           onBottomReached={handleOnBottomReached} // Pagination handler
-  //           getOptionProps={(option) => ({
-  //             disable: false, // Ensure options are clickable
-  //           })}
-  //           minLenToSearch={3}
-  //           searchPlaceholder="Type 3+ characters to search"
-  //           isInitialLoading={false}
-  //           isFiltering={false}
-  //           error={roleError}
-  //           variant="basic"
-  //           secured={true}
-  //           styles={{
-  //             option: {
-  //               cursor: "pointer", // Ensure options are clickable
-  //             },
-  //           }}
-  //         />
-  //         {roleError && (
-  //           <span className="text-xs font-semibold text-[#FF6D6D]">
-  //             {roleError.message}
-  //           </span>
-  //         )}
-  //       </div>
-  //     </div>
-  //   );
-  // };
+
+// export const RoleDropDown = () => {
+//   const { rolesData } = usersStore(); // Fetch roles data from the store
+
+//   const [pageSize, setPageSize] = useState(10);
+
+//   // UseController to handle form state for the role field
+//   const {
+//     field: { value: role, onChange: onSelectedRole },
+//     fieldState: { error: roleError },
+//   } = useController({
+//     name: CreateUserFormNames?.role,
+//   });
+
+//   // Filter and format roles data for dropdown
+//   const validRoles = Array.isArray(rolesData)
+//     ? rolesData
+//         .filter((role) => role.name?.trim()) // Exclude roles with empty or null labels
+//         .map((role) => ({
+//           label: role.name, // Role name for display
+//           value: role.id,   // Role ID for value
+//         }))
+//     : [];
+
+//   const handleSearch = (searchValue: string) => {
+//     console.log("Search value:", searchValue);
+//   };
+
+//   const handleOnBottomReached = () => {
+//     if (rolesData.length >= pageSize) {
+//       setPageSize((prevLimit) => prevLimit + 10);
+//     }
+//   };
+
+//   return (
+//     <div className="flex flex-col gap-2">
+//       <div className="flex flex-row items-center gap-1">
+//         <Text className="text-xs font-normal text-black">Role</Text>
+//         <Text className="text-[#7677F4]">*</Text>
+//       </div>
+//       <div className="w-[300px]">
+//         <MultiSelect
+//           name="create-user-role-dropdown"
+//           value={role} // Selected role
+//           placeholder="Select the roles"
+//           data={validRoles} // List of valid roles
+//           onChange={(selectedValue) => {
+//             console.log("Selected role:", selectedValue);
+//             onSelectedRole(selectedValue); // Update form state
+//           }}
+//           onSearch={handleSearch} // Search handler
+//           onBottomReached={handleOnBottomReached} // Pagination handler
+//           getOptionProps={(option) => ({
+//             disable: false, // Ensure options are clickable
+//           })}
+//           minLenToSearch={3}
+//           searchPlaceholder="Type 3+ characters to search"
+//           isInitialLoading={false}
+//           isFiltering={false}
+//           error={roleError}
+//           variant="basic"
+//           secured={true}
+//           styles={{
+//             option: {
+//               cursor: "pointer", // Ensure options are clickable
+//             },
+//           }}
+//         />
+//         {roleError && (
+//           <span className="text-xs font-semibold text-[#FF6D6D]">
+//             {roleError.message}
+//           </span>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
 
 
 
 
-  
+
 
 // export const MultiSelectDropdown = ({ options }) => {
 //   const [selectedItems, setSelectedItems] = useState([]);
@@ -786,7 +786,7 @@ export const GenerateUseCode = () => {
 
 export const RoleDropDown = () => {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const {rolesData} = usersStore()
+  const { rolesData } = usersStore()
   const [searchQuery, setSearchQuery] = useState("");
 
   const toggleSelection = (value) => {
@@ -866,7 +866,7 @@ export const RoleDropDown = () => {
 export const StatusDropdown = () => {
   const {
     field: { value: selectedStatus, onChange: setSelectedStatus },
-    fieldState: {error}
+    fieldState: { error }
   } = useController({
     name: CreateUserFormNames?.status,
   });

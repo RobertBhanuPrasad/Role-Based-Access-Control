@@ -276,14 +276,14 @@ export const PermissionActions = ({ permissionId, onDelete }) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent
                 align="end"
-                className="max-h-[300px] max-w-[170px] overflow-y-auto text-[#333333] bg-white w-[100px] text-left"
+                className="max-h-[300px] max-w-[170px] overflow-y-auto text-[#333333] bg-white w-[100px] text-left shadow-lg rounded-lg"
             >
                 {permissionOptions?.map((option) => {
                     if (option?.isEnable) {
                         return (
                             <DropdownMenuItem
                                 key={option?.value}
-                                className="cursor-pointer  hover:bg-blue-300 hover:text-white px-3 py-1 text-left"
+                                className="cursor-pointer  hover:bg-blue-300 hover:text-white px-3 py-1 text-center"
                                 onClick={() => handleAction(option?.value)}
                             >
                                 {option?.label}
