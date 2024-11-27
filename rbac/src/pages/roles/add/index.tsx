@@ -18,6 +18,7 @@ import { useValidateCurrentStepFields } from '@/utility/ValidationStaps'
 import { useRouter } from "next/router";
 import { usePathname } from 'next/navigation'
 import { CreateRoleSchema } from '@/components/roles/RolesValidations'
+import { usersStore } from '@/ZustandStore/UsersStore'
 
 
 const index = (): JSX.Element => {
@@ -29,13 +30,16 @@ export const CreateRole = () => {
   const onSubmit = (data: unknown) => {
     console.log("form data", data);
   };
-
+  const {roleDefaultData} = usersStore()
+const defaultValues = roleDefaultData;
   return (
     <div className="">
       <div>
         <Form onSubmit={onSubmit}
-          schema={CreateRoleSchema}>
-          <CreatRolePage />
+          schema={CreateRoleSchema}
+          defaultValues={defaultValues}
+          >
+          <CreateRolePage />
         </Form>
       </div>
     </div>
@@ -51,7 +55,7 @@ const requireFeilds = () => {
   return NewRoleStepFields;
 };
 
-export const CreatRolePage = () => {
+export const CreateRolePage = () => {
   const [loading, setLoading] = useState(false);
   const [statusUpdationDialogOpen, setStatusUpdationDialogOpen] =
     useState(false);

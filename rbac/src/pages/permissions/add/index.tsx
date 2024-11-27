@@ -18,26 +18,31 @@ import { IsEditPermission, IsNewPermission } from '@/components/permissions/Hand
 import { CreatePermissionSchema } from '@/components/permissions/PermissionsValidations';
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
+import { usersStore } from '@/ZustandStore/UsersStore';
 
 
-const CreatePermissionPage = () => {
+const CreatePermission = () => {
     const onSubmit = (data: unknown) => {
       console.log("form data", data);
     };
-    
+    const {permissionsDefaultData} = usersStore()
+    const defaultValues = permissionsDefaultData
+    console.log(defaultValues, permissionsDefaultData, "defaultvaluespermissions")
     return (
       <div className="">
         <div>
           <Form onSubmit={onSubmit}
-          schema={CreatePermissionSchema}>
-              <CreatPermissionPage/>
+          schema={CreatePermissionSchema}
+          defaultValues={defaultValues}
+          >
+              <CreatPermissionsPage/>
           </Form>
         </div>
       </div>
     );
 }
 
-export default CreatePermissionPage;
+export default CreatePermission;
 
 const requireFeilds = () => {
   const NewPermissionStepFields = [
@@ -47,7 +52,7 @@ const requireFeilds = () => {
   return NewPermissionStepFields;
 };
 
-export const CreatPermissionPage = () => {
+export const CreatPermissionsPage = () => {
   const [loading, setLoading] = useState(false);
   const { getValues } = useFormContext();
   const { ValidateCurrentStepFields } = useValidateCurrentStepFields();

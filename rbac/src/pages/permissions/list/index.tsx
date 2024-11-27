@@ -237,17 +237,60 @@ export default function CrudTable() {
     );
 }
 
-const PermissionActions = ({ permissionId, onDelete }: { permissionId: number; onDelete: Function }) => {
+
+export const PermissionActions = ({ permissionId, onDelete }) => {
+    const router = useRouter();
+
+    const permissionOptions = [
+        { value: 'edit', label: 'Edit', isEnable: true },
+        { value: 'view', label: 'View', isEnable: true },
+        { value: 'delete', label: 'Delete', isEnable: true },
+    ];
+
+    const handleAction = async (action) => {
+        if (action === 'edit') {
+            router.push(`/permissions/${permissionId}/edit`);
+        } else if (action === 'view') {
+            router.push(`/permissions/${permissionId}`);
+        } else if (action === 'delete') {
+            const confirmDelete = window.confirm('Are you sure you want to delete this role?');
+            if (confirmDelete) {
+                onDelete(permissionId);
+                const { error } = await supabase.from('permissions').delete().eq('id', permissionId);
+                if (error) {
+                    console.error(error);
+                }
+            }
+        }
+    };
+
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger>
-                <MoreVertical className="cursor-pointer text-blue-600" />
+       <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button
+                    variant="ghost"
+                    className="h-8 w-8 p-0 text-[#7677F4] hover:text-[#7677F4]"
+                >
+                    <MoreVertical className="h-6 w-6" />
+                </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => onDelete(permissionId)}>Delete</DropdownMenuItem>
-                <DropdownMenuItem>
-                    <Link href={`/permissions/edit/${permissionId}`}>Edit</Link>
-                </DropdownMenuItem>
+            <DropdownMenuContent
+                align="end"
+                className="max-h-[300px] max-w-[170px] overflow-y-auto text-[#333333] bg-white w-[100px] text-left"
+            >
+                {permissionOptions?.map((option) => {
+                    if (option?.isEnable) {
+                        return (
+                            <DropdownMenuItem
+                                key={option?.value}
+                                className="cursor-pointer  hover:bg-blue-300 hover:text-white px-3 py-1 text-left"
+                                onClick={() => handleAction(option?.value)}
+                            >
+                                {option?.label}
+                            </DropdownMenuItem>
+                        );
+                    }
+                })}
             </DropdownMenuContent>
         </DropdownMenu>
     );

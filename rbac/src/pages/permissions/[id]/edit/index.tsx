@@ -1,9 +1,9 @@
 import React from 'react'
-import { CreateRole } from '../../add';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import { usersStore } from '@/ZustandStore/UsersStore';
-import { handleRoleDetails } from '@/components/roles/HandleRolesDefaultValues';
+import { handlePermissionDetails } from '@/components/permissions/HandlePermissionsDefaultValues';
+import CreatePermission from '../../add';
 
 const index = () => {
   return (
@@ -15,7 +15,8 @@ export default index;
 
 export const EditUserPage = () => {
   const {
-    setRolesDefaultData
+    setPermissionsDefaultData,
+    permissionsDefaultData
   } = usersStore();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -26,22 +27,23 @@ export const EditUserPage = () => {
   const {query} = useRouter()
 
   console.log(query, "bhanuquery")
+
   useEffect(() => {
     console.log("bhanuprasad")
     if (id){
-
     const fetchDefaultValues = async () => {
-      const defaultValues: any= await handleRoleDetails(
+      const defaultValues: any= await handlePermissionDetails(
         id,
       );
-      console.log(defaultValues, "defaultvaluesbhanuprasad")
-      setRolesDefaultData(defaultValues)
+      console.log(defaultValues, "defaultvaluesbhanuprasadpermissions")
+      setPermissionsDefaultData(defaultValues)
       setIsLoading(false);
     };
     fetchDefaultValues();
   }
   }, [id]);
-
+  
+  console.log(permissionsDefaultData, "permissionsedit")
   console.log(isLoading, "loadingprasad")
 
   if (isLoading) {
@@ -52,6 +54,6 @@ export const EditUserPage = () => {
     );
   }
     return (
-        <CreateRole/>
+        <CreatePermission />
     )
 }

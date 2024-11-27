@@ -1,6 +1,7 @@
 import Form from '@/components/FormField'
 import React, { useEffect, useState } from 'react'
 import { useFormContext, useController } from 'react-hook-form'
+// import Select from "react-select";
 import CloseEyeIcon from '../../../../public/asserts/closeEyeIcon'
 import OpenEyeIcon from '../../../../public/asserts/openEyeIcon'
 import { Button } from '@/components/ui/button'
@@ -30,6 +31,9 @@ import { usersStore } from '@/ZustandStore/UsersStore'
 import { CreateUserSchema } from '@/components/users/CreateUserValidations'
 import { supabase } from '@/utility/SupabaseClient'
 // import Tick from "@public/assets/Tick.png";
+import * as SelectPrimitive from "@radix-ui/react-select";
+import { Check, ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const index = () => {
   return (
@@ -39,7 +43,7 @@ const index = () => {
   )
 }
 
-export default index
+export default index;
 
 
 export const CreateUser = () => {
@@ -549,43 +553,6 @@ export const PhoneNumber = () => {
   );
 };
 
-//   const {
-//     field: { value, onChange },
-//     fieldState: { error },
-//   } = useController({
-//     name: CreateUserFormNames?.phone_number,
-//   });
-
-//   // Function to store the preprocessed max capacity input value
-//   const handleMaxCapacityChange = (value: any) => {
-//     onChange(value);
-//   };
-
-//   return (
-//     <div className="flex flex-col gap-1">
-//       <div className="flex flex-row items-center gap-1">
-//         <Text className="text-xs font-normal text-[#333333]">
-//           Phone Number
-//         </Text>
-//         <Text className="text-[#7677F4]">*</Text>
-//       </div>
-//       <Input
-//         placeholder="Enter phone number"
-//         value={value}
-//         onChange={(e) => {
-//           handleMaxCapacityChange(e.target.value);
-//         }}
-//         className="rounded-[12px] text-[14px] text-black"
-//       />
-//       {error && (
-//         <span className="!w-[320px] break-all text-[12px] text-[#FF6D6D]">
-//           {error?.message}
-//         </span>
-//       )}
-//     </div>
-//   );
-// };
-
 
 
 export const AddressDetails = () => {
@@ -678,83 +645,223 @@ export const GenerateUseCode = () => {
 };
 
   
-  export const RoleDropDown = () => {
-    const { rolesData } = usersStore(); // Fetch roles data from the store
+  // export const RoleDropDown = () => {
+  //   const { rolesData } = usersStore(); // Fetch roles data from the store
   
-    const [pageSize, setPageSize] = useState(10);
+  //   const [pageSize, setPageSize] = useState(10);
   
-    // UseController to handle form state for the role field
-    const {
-      field: { value: role, onChange: onSelectedRole },
-      fieldState: { error: roleError },
-    } = useController({
-      name: CreateUserFormNames?.role,
-    });
+  //   // UseController to handle form state for the role field
+  //   const {
+  //     field: { value: role, onChange: onSelectedRole },
+  //     fieldState: { error: roleError },
+  //   } = useController({
+  //     name: CreateUserFormNames?.role,
+  //   });
   
-    // Filter and format roles data for dropdown
-    const validRoles = Array.isArray(rolesData)
-      ? rolesData
-          .filter((role) => role.name?.trim()) // Exclude roles with empty or null labels
-          .map((role) => ({
-            label: role.name, // Role name for display
-            value: role.id,   // Role ID for value
-          }))
-      : [];
+  //   // Filter and format roles data for dropdown
+  //   const validRoles = Array.isArray(rolesData)
+  //     ? rolesData
+  //         .filter((role) => role.name?.trim()) // Exclude roles with empty or null labels
+  //         .map((role) => ({
+  //           label: role.name, // Role name for display
+  //           value: role.id,   // Role ID for value
+  //         }))
+  //     : [];
   
-    const handleSearch = (searchValue: string) => {
-      console.log("Search value:", searchValue);
-    };
+  //   const handleSearch = (searchValue: string) => {
+  //     console.log("Search value:", searchValue);
+  //   };
   
-    const handleOnBottomReached = () => {
-      if (rolesData.length >= pageSize) {
-        setPageSize((prevLimit) => prevLimit + 10);
-      }
-    };
+  //   const handleOnBottomReached = () => {
+  //     if (rolesData.length >= pageSize) {
+  //       setPageSize((prevLimit) => prevLimit + 10);
+  //     }
+  //   };
   
-    return (
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-row items-center gap-1">
-          <Text className="text-xs font-normal text-black">Role</Text>
-          <Text className="text-[#7677F4]">*</Text>
-        </div>
-        <div className="w-[300px]">
-          <MultiSelect
-            name="create-user-role-dropdown"
-            value={role} // Selected role
-            placeholder="Select the roles"
-            data={validRoles} // List of valid roles
-            onChange={(selectedValue) => {
-              console.log("Selected role:", selectedValue);
-              onSelectedRole(selectedValue); // Update form state
-            }}
-            onSearch={handleSearch} // Search handler
-            onBottomReached={handleOnBottomReached} // Pagination handler
-            getOptionProps={(option) => ({
-              disable: false, // Ensure options are clickable
-            })}
-            minLenToSearch={3}
-            searchPlaceholder="Type 3+ characters to search"
-            isInitialLoading={false}
-            isFiltering={false}
-            error={roleError}
-            variant="basic"
-            secured={true}
-            styles={{
-              option: {
-                cursor: "pointer", // Ensure options are clickable
-              },
-            }}
-          />
-          {roleError && (
-            <span className="text-xs font-semibold text-[#FF6D6D]">
-              {roleError.message}
-            </span>
-          )}
-        </div>
-      </div>
+  //   return (
+  //     <div className="flex flex-col gap-2">
+  //       <div className="flex flex-row items-center gap-1">
+  //         <Text className="text-xs font-normal text-black">Role</Text>
+  //         <Text className="text-[#7677F4]">*</Text>
+  //       </div>
+  //       <div className="w-[300px]">
+  //         <MultiSelect
+  //           name="create-user-role-dropdown"
+  //           value={role} // Selected role
+  //           placeholder="Select the roles"
+  //           data={validRoles} // List of valid roles
+  //           onChange={(selectedValue) => {
+  //             console.log("Selected role:", selectedValue);
+  //             onSelectedRole(selectedValue); // Update form state
+  //           }}
+  //           onSearch={handleSearch} // Search handler
+  //           onBottomReached={handleOnBottomReached} // Pagination handler
+  //           getOptionProps={(option) => ({
+  //             disable: false, // Ensure options are clickable
+  //           })}
+  //           minLenToSearch={3}
+  //           searchPlaceholder="Type 3+ characters to search"
+  //           isInitialLoading={false}
+  //           isFiltering={false}
+  //           error={roleError}
+  //           variant="basic"
+  //           secured={true}
+  //           styles={{
+  //             option: {
+  //               cursor: "pointer", // Ensure options are clickable
+  //             },
+  //           }}
+  //         />
+  //         {roleError && (
+  //           <span className="text-xs font-semibold text-[#FF6D6D]">
+  //             {roleError.message}
+  //           </span>
+  //         )}
+  //       </div>
+  //     </div>
+  //   );
+  // };
+
+
+
+
+  
+
+// export const MultiSelectDropdown = ({ options }) => {
+//   const [selectedItems, setSelectedItems] = useState([]);
+
+//   const toggleSelection = (value) => {
+//     setSelectedItems((prev) =>
+//       prev.includes(value)
+//         ? prev.filter((item) => item !== value) // Deselect
+//         : [...prev, value] // Select
+//     );
+//   };
+
+//   return (
+//     <div className="w-full max-w-xs">
+//       <SelectPrimitive.Root>
+//         <SelectPrimitive.Trigger
+//           className={cn(
+//             "flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-black",
+//             "focus:outline-none focus:ring-2 focus:ring-blue-500"
+//           )}
+//         >
+//           <div className="truncate">
+//             {selectedItems.length > 0
+//               ? selectedItems.join(", ")
+//               : "Select options"}
+//           </div>
+//           <SelectPrimitive.Icon asChild>
+//             <ChevronDown className="h-4 w-4 opacity-50" />
+//           </SelectPrimitive.Icon>
+//         </SelectPrimitive.Trigger>
+//         <SelectPrimitive.Portal>
+//           <SelectPrimitive.Content className="rounded-lg border bg-white shadow-md">
+//             <SelectPrimitive.Viewport>
+//               {options.map((option) => (
+//                 <SelectPrimitive.Item
+//                   key={option.value}
+//                   value={option.value}
+//                   className="flex cursor-pointer select-none items-center gap-2 py-2 px-3 text-sm text-black hover:bg-gray-100"
+//                   onSelect={() => toggleSelection(option.value)}
+//                 >
+//                   <span className="flex h-4 w-4 items-center justify-center border rounded">
+//                     {selectedItems.includes(option.value) && (
+//                       <Check className="h-3 w-3" />
+//                     )}
+//                   </span>
+//                   {option.label}
+//                 </SelectPrimitive.Item>
+//               ))}
+//             </SelectPrimitive.Viewport>
+//           </SelectPrimitive.Content>
+//         </SelectPrimitive.Portal>
+//       </SelectPrimitive.Root>
+//     </div>
+//   );
+// };
+
+
+
+export const RoleDropDown = () => {
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const {rolesData} = usersStore()
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const toggleSelection = (value) => {
+    setSelectedItems((prev) =>
+      prev.includes(value)
+        ? prev.filter((item) => item !== value) // Deselect
+        : [...prev, value] // Select
     );
   };
-  
+
+  const filteredOptions = rolesData?.filter((option) =>
+    option.label?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <div className="w-full max-w-xs">
+      <SelectPrimitive.Root>
+        <SelectPrimitive.Trigger
+          className={cn(
+            "flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-black",
+            "focus:outline-none focus:ring-2 focus:ring-blue-500"
+          )}
+        >
+          <div className="truncate">
+            {selectedItems.length > 0
+              ? selectedItems.join(", ")
+              : "Select options"}
+          </div>
+          <SelectPrimitive.Icon asChild>
+            <ChevronDown className="h-4 w-4 opacity-50" />
+          </SelectPrimitive.Icon>
+        </SelectPrimitive.Trigger>
+        <SelectPrimitive.Portal>
+          <SelectPrimitive.Content className="rounded-lg border bg-white shadow-md">
+            <div className="p-2">
+              <input
+                type="text"
+                placeholder="Search..."
+                className="w-full rounded-md border border-gray-300 px-2 py-1 text-sm"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <SelectPrimitive.Viewport>
+              {filteredOptions?.length > 0 ? (
+                filteredOptions?.map((option) => (
+                  <SelectPrimitive.Item
+                    key={option.value}
+                    value={option.value}
+                    className="flex cursor-pointer select-none items-center gap-2 py-2 px-3 text-sm text-black hover:bg-gray-100"
+                    onSelect={() => toggleSelection(option.value)}
+                  >
+                    <span className="flex h-4 w-4 items-center justify-center border rounded">
+                      {selectedItems.includes(option.value) && (
+                        <Check className="h-3 w-3" />
+                      )}
+                    </span>
+                    {option?.label}
+                  </SelectPrimitive.Item>
+                ))
+              ) : (
+                <div className="px-3 py-2 text-sm text-gray-500">
+                  No options found
+                </div>
+              )}
+            </SelectPrimitive.Viewport>
+          </SelectPrimitive.Content>
+        </SelectPrimitive.Portal>
+      </SelectPrimitive.Root>
+    </div>
+  );
+};
+
+
+
 
 export const StatusDropdown = () => {
   const {
@@ -765,8 +872,8 @@ export const StatusDropdown = () => {
   });
 
   const statusOptions = [
-    { label: "Active", value: "active" },
-    { label: "Inactive", value: "inactive" },
+    { label: "Active", value: "Active" },
+    { label: "Inactive", value: "Inactive" },
   ];
 
   const handleChange = (value: string) => {
