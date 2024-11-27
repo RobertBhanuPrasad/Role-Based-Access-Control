@@ -1,7 +1,6 @@
 import Form from '@/components/FormField'
 import React, { useEffect, useState } from 'react'
 import { useFormContext, useController } from 'react-hook-form'
-// import Select from "react-select";
 import CloseEyeIcon from '../../../../public/asserts/closeEyeIcon'
 import OpenEyeIcon from '../../../../public/asserts/openEyeIcon'
 import { Button } from '@/components/ui/button'
@@ -30,10 +29,6 @@ import {
 import { usersStore } from '@/ZustandStore/UsersStore'
 import { CreateUserSchema } from '@/components/users/CreateUserValidations'
 import { supabase } from '@/utility/SupabaseClient'
-// import Tick from "@public/assets/Tick.png";
-import * as SelectPrimitive from "@radix-ui/react-select";
-import { Check, ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils";
 import RedReverseIcon from '../../../../public/asserts/RedReverseIcon'
 import Exclamation from '../../../../public/asserts/Exclamation'
 
@@ -57,43 +52,24 @@ export const CreateUser = () => {
     console.log("formbhanudata", data);
   };
 
+
+  // This `useEffect` hook is used to fetch roles and permissions data from Supabase when the component mounts. It triggers an asynchronous function to retrieve the data, sets the loading state to `true` during the fetch, and updates the `rolesData` and `permissionsData` states accordingly. If any errors occur during the fetch, they are logged to the console. The `loading` state is set to `false` after the fetch process completes, regardless of whether it succeeds or fails. The effect only runs once when the component is mounted due to the empty dependency array.
   useEffect(() => {
     const fetchRolesAndPermissions = async () => {
       try {
-        setLoading(true);
-
-        // Fetch roles
-        const { data: roles, error: rolesError } = await supabase
-          .from('roles')
-          .select('*')
-          .order('id', { ascending: false });
-
-        if (rolesError) {
-          console.error('Error fetching roles:', rolesError);
-        } else {
-          setRolesData(roles || []); // Ensure data is always an array
-        }
-
-        // Fetch permissions
-        const { data: permissions, error: permissionsError } = await supabase
-          .from('permissions')
-          .select('*')
-          .order('id', { ascending: false });
-
-        if (permissionsError) {
-          console.error('Error fetching permissions:', permissionsError);
-        } else {
-          setPermissionsData(permissions || []); // Ensure data is always an array
-        }
+        setLoading(true); // Start loading state
+        const { data: roles, error: rolesError } = await supabase.from('roles').select('*').order('id', { ascending: false }); // Fetch roles
+        if (rolesError) console.error('Error fetching roles:', rolesError); else setRolesData(roles || []); // Handle roles data/error
+        const { data: permissions, error: permissionsError } = await supabase.from('permissions').select('*').order('id', { ascending: false }); // Fetch permissions
+        if (permissionsError) console.error('Error fetching permissions:', permissionsError); else setPermissionsData(permissions || []); // Handle permissions data/error
       } catch (error) {
-        console.error('Unexpected error:', error);
+        console.error('Unexpected error:', error); // Log unexpected errors
       } finally {
-        setLoading(false);
+        setLoading(false); // Stop loading state
       }
     };
-
-    fetchRolesAndPermissions();
-  }, []);
+    fetchRolesAndPermissions(); // Call the function
+  }, []); // Run effect on mount only
 
   let defaultValues: any = {
   };
@@ -581,8 +557,8 @@ export const Password = () => {
         </span>
       </div>
       {error && (
-          <span className="text-[12px] text-[#FF6D6D]">{error?.message}</span>
-        )}
+        <span className="text-[12px] text-[#FF6D6D]">{error?.message}</span>
+      )}
     </div>
   )
 }
