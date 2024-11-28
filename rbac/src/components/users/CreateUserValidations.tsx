@@ -22,46 +22,10 @@ export const CreateUserSchema = z.object({
     .email({ message: 'Invalid email address' })
     .min(1, { message: 'Email is required' }),
 
-  password: z
-    .string({
-      required_error: 'Password is required',
-      invalid_type_error: 'Password is required',
-
-    })
-    .nonempty({
-        message: 'Password is required',
-      })
-    .min(8, { message: 'Password must be at least 8 characters long' })
-    .max(100, { message: 'Password cannot exceed 100 characters' })
-    .regex(/[a-zA-Z]/, { message: 'Password must contain at least one letter' })
-    .regex(/[0-9]/, { message: 'Password must contain at least one number' }),
-
   status:z.string({
     required_error: "Status required",
     invalid_type_error: "Status required",
   }),
-
-
-  // role :z
-  // .array(
-  //   z.string({
-  //     required_error: "Role required"
-  //   })
-  // )
-  // .nonempty({
-  //   message: "Role required",
-  // }),
-
-
-  // permissions :z
-  // .array(
-  //   z.string({
-  //     required_error: "Permission is required"
-  //   })
-  // )
-  // .nonempty({
-  //   message: "Permission is required",
-  // }),
 
   user_code: z
     .string({
