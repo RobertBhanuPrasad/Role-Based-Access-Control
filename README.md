@@ -137,10 +137,12 @@ Javascript, HTML, CSS, Typescript, Next js, Tailwind CSS, Supabase
 
 
 ## Screenshots
-
+     ##USERS PAGE
 ![Screenshot from 2024-11-28 09-04-49](https://github.com/user-attachments/assets/ab53ff1e-bc5a-4d60-9bb7-e503ec899efc)
+![Screenshot from 2024-11-28 09-05-11](https://github.com/user-attachments/assets/9d53b111-17fb-464b-a52a-13314c9880f5)
+![Screenshot from 2024-11-28 09-07-04](https://github.com/user-attachments/assets/587643b3-8e0e-4201-b1d3-3327fab840c6)
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+
 
 
 ## Support
