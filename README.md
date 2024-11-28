@@ -138,6 +138,8 @@ Javascript, HTML, CSS, Typescript, Next js, Tailwind CSS, Supabase
 
 ## Screenshots
 
+![Screenshot from 2024-11-28 09-04-49](https://github.com/user-attachments/assets/ab53ff1e-bc5a-4d60-9bb7-e503ec899efc)
+
 ![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
 
 
