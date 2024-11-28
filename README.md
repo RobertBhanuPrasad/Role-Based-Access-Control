@@ -117,10 +117,6 @@ This project is used by the following companies:
 - **Dialogs:** Interact with various confirmation and validation dialogs during user creation or other actions.
 - **Breadcrumbs:** For easy navigations
 
-## Demo
-
-Insert gif or link to demo
-
 
 # Hi, I'm Robert! 👋
 
