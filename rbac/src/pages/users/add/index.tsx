@@ -246,9 +246,6 @@ export const CreateUserPage = () => {
             <Email />
           </div>
           <div className="min-h-20 w-80">
-            <Password />
-          </div>
-          <div className="min-h-20 w-80">
             <PhoneNumber />
           </div>
           <div className="min-h-20 w-80">
@@ -512,59 +509,6 @@ export const Email = ({ index }: any) => {
     </div>
   );
 };
-
-export const Password = () => {
-  const [passwordShow, setPasswordShow] = useState(false);
-  const pathname = usePathname()
-  const {
-    field: { value: password, onChange: onPassword },
-    fieldState: { error },
-  } = useController({ name: CreateUserFormNames?.password });
-
-  return (
-    <div className="flex flex-col gap-2 mt-0">
-      <div className="flex flex-row items-center gap-1">
-        <Text className="text-xs font-normal text-[#333333]">
-          Password
-        </Text>{" "}
-        <Text className="text-[#7677F4]">*</Text>
-      </div>
-      <div className=" ml-[10px] flex h-[40px] w-[320px] items-center justify-between rounded-[12px] border-[2px] border-black border-inherit p-1 pl-[15px] outline-none focus:border-blue-700">
-        <Input
-          type={passwordShow ? "text" : "password"}
-          value={password}
-          className="rounded-[12px] text-black focus:outline-none focus:ring-2 focus:ring-blue-500 w-full !border-none h-fit "
-          onChange={(e) => {
-            e.stopPropagation();
-            onPassword(e.target.value);
-          }}
-          error={error ? true : false}
-          disabled={IsEditUser(pathname)}
-          placeholder="Enter password"
-        />
-        <span
-          tabIndex={3}
-          className="mr-[10px] cursor-pointer"
-          onClick={(e) => {
-            e.stopPropagation();
-            setPasswordShow(!passwordShow);
-          }}
-          onKeyDown={(e) => {
-            if (e.code === "Enter" || e.code === "Space") {
-              setPasswordShow(!passwordShow);
-            }
-          }}
-        >
-          {passwordShow ? <CloseEyeIcon /> : <OpenEyeIcon />}
-        </span>
-      </div>
-      {error && (
-        <span className="text-[12px] text-[#FF6D6D]">{error?.message}</span>
-      )}
-    </div>
-  )
-}
-
 
 
 
