@@ -711,7 +711,7 @@ export const RoleDropDown = () => {
       .filter((role) => role.name?.trim()) // Filter out invalid roles
       .map((role) => ({
         label: role.name,
-        value: role.name,
+        value: role.id,
       }))
     : [];
 
@@ -746,8 +746,6 @@ export const RoleDropDown = () => {
             No results found.
           </p>
         }
-        maxSelected={5}  // Limit the number of roles that can be selected
-      // You can add more props such as onSearch, loadingIndicator, etc.
       />
 
       {/* Error Message Display */}
@@ -772,7 +770,7 @@ export const PermissionsDropDown = () => {
       .filter((role) => role.name?.trim()) // Filter out invalid roles
       .map((role) => ({
         label: role.name,
-        value: role.name,
+        value: role.id,
       }))
     : [];
 
@@ -807,8 +805,6 @@ export const PermissionsDropDown = () => {
             No results found.
           </p>
         }
-        maxSelected={5}  // Limit the number of roles that can be selected
-      // You can add more props such as onSearch, loadingIndicator, etc.
       />
 
       {/* Error Message Display */}

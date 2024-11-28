@@ -13,16 +13,17 @@ interface User {
     role: string;
     updated_at: string;
     id: number;
+    permissions: string[]; // Array to store permissions
 }
+
 export default function CrudTable() {
-    const router = useRouter()
+    const router = useRouter();
     const [data, setData] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedUsers, setSelectedUsers] = useState<number[]>([]); // Stores selected user IDs
     const [bulkAction, setBulkAction] = useState<string | null>(null); // Tracks dropdown action
     const [currentPage, setCurrentPage] = useState<number>(1); // Track the current page
     const rowsPerPage = 10; // Number of rows displayed per page
-    console.log(currentPage, "currentpagebhanu")
 
     // Fetch data on component mount
     useEffect(() => {
@@ -31,14 +32,27 @@ export default function CrudTable() {
 
     const fetchData = async () => {
         setLoading(true);
-        // Fetch the users data sorted by id in descending order
-        const { data, error } = await supabase.from('users').select('*').order('id', { ascending: false });
-        if (error) {
-            console.error(error);
-        } else {
-            setData(data); // Update the data state with the fetched data
+        try {
+            // Fetch the users data directly with the permissions column
+            const { data: users, error } = await supabase
+                .from('users')
+                .select('*') // Fetch all columns, including the permissions column
+                .order('id', { ascending: false });
+
+            if (error) throw error;
+
+            // No transformation needed as permissions data comes directly from users table
+            const transformedData = users.map((user: any) => ({
+                ...user,
+                permissions: Array.isArray(user.permissions) ? user.permissions : [], // Ensure permissions is an array
+            }));
+
+            setData(transformedData);
+        } catch (error) {
+            console.error('Error fetching users:', error);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     // Function to handle deletion of a row
@@ -56,13 +70,11 @@ export default function CrudTable() {
     // Function to select all users on the current page
     const toggleSelectAll = (selectAll: boolean) => {
         if (selectAll) {
-            // If selecting all, add the user IDs of the current page to selectedUsers
             setSelectedUsers((prev) => [
                 ...prev,
                 ...paginatedData.map((user) => user.id).filter((id) => !prev.includes(id)),
             ]);
         } else {
-            // Deselect all users on the current page
             setSelectedUsers((prev) =>
                 prev.filter((id) => !paginatedData.map((user) => user.id).includes(id))
             );
@@ -71,13 +83,13 @@ export default function CrudTable() {
 
     // Paginated Data based on the current page
     const paginatedData = data.slice(
-        (currentPage - 1) * rowsPerPage, // Start index for the current page
-        currentPage * rowsPerPage // End index for the current page
+        (currentPage - 1) * rowsPerPage,
+        currentPage * rowsPerPage
     );
 
     // Handle page change
     const handlePageChange = (newPage: number) => {
-        setCurrentPage(newPage); // Update the current page when a button is clicked
+        setCurrentPage(newPage);
     };
 
     // Function to handle bulk status change
@@ -98,9 +110,9 @@ export default function CrudTable() {
                 alert('Failed to update statuses. Please try again.');
             } else {
                 alert('Statuses updated successfully.');
-                fetchData(); // Refresh data after bulk update
-                setSelectedUsers([]); // Reset selection after update
-                setBulkAction(null); // Reset bulk action
+                fetchData();
+                setSelectedUsers([]);
+                setBulkAction(null);
             }
         } catch (err) {
             console.error('Unexpected error:', err);
@@ -149,13 +161,11 @@ export default function CrudTable() {
                     </Button>
                 </div>
 
-
                 {/* Loading Indicator */}
                 {loading ? (
                     <p className="text-center text-blue-600">Loading...</p>
                 ) : (
                     <div className="overflow-x-auto">
-                        {/* Table */}
                         <table className="w-full table-auto border border-blue-300">
                             <thead className="bg-blue-200">
                                 <tr>
@@ -171,6 +181,7 @@ export default function CrudTable() {
                                     <th className="px-4 py-2 border text-black">Email</th>
                                     <th className="px-4 py-2 border text-black">Status</th>
                                     <th className="px-4 py-2 border text-black">Role</th>
+                                    <th className="px-4 py-2 border text-black">Permissions</th>
                                     <th className="px-4 py-2 border text-black">Updated At</th>
                                     <th className="px-4 py-2 border text-black">Actions</th>
                                 </tr>
@@ -186,25 +197,34 @@ export default function CrudTable() {
                                             />
                                         </td>
                                         <td className="px-4 py-2 border text-center text-blue-500">
-                                                {row?.user_code || '-'}
+                                            {row.user_code || '-'}
                                         </td>
                                         <td className="px-4 py-2 border text-center text-black">
-                                            {row?.full_name || '-'}
+                                            {row.full_name || '-'}
                                         </td>
                                         <td className="px-4 py-2 border text-center text-black">
-                                            {row?.email || '-'}
+                                            {row.email || '-'}
                                         </td>
-                                        <td className={`px-4 py-2 border font-semibold text-center text-black ${row.status === 'Active'
+                                        <td className={`px-4 py-2 border font-semibold text-center ${row.status === 'Active'
                                             ? 'text-green-500'
                                             : 'text-red-500'
                                             }`}>
-                                            {row?.status || '-'}
+                                            {row.status || '-'}
                                         </td>
                                         <td className="px-4 py-2 border text-center text-black">
-                                            {row?.role || '-'}
+                                            {row.permissions.map((role, index) => (
+                                                <span key={index}>{role?.label || "-"}</span>
+                                            ))}
                                         </td>
+
                                         <td className="px-4 py-2 border text-center text-black">
-                                            {row?.updated_at || '-'}
+                                            {row.permissions.map((perm, index) => (
+                                                <span key={index}>{perm?.label || "-"}</span>
+                                            ))}
+                                        </td>
+
+                                        <td className="px-4 py-2 border text-center text-black">
+                                            {row.updated_at || '-'}
                                         </td>
                                         <td className="px-4 py-2 border text-center">
                                             <UserActions userId={row.id} onDelete={deleteRow} />
@@ -242,6 +262,7 @@ export default function CrudTable() {
         </div>
     );
 }
+
 
 
 export const UserActions = ({ userId, onDelete }) => {
@@ -303,7 +324,7 @@ export const UserActions = ({ userId, onDelete }) => {
                             >
                                 {option?.label}
                             </DropdownMenuItem>
-                            
+
                         );
                     }
                 })}
