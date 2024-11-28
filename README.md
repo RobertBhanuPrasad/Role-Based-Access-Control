@@ -137,12 +137,18 @@ Javascript, HTML, CSS, Typescript, Next js, Tailwind CSS, Supabase
 
 
 ## Screenshots
-     ##USERS PAGE
+     ##**USERS PAGES**
 ![Screenshot from 2024-11-28 09-04-49](https://github.com/user-attachments/assets/ab53ff1e-bc5a-4d60-9bb7-e503ec899efc)
 ![Screenshot from 2024-11-28 09-05-11](https://github.com/user-attachments/assets/9d53b111-17fb-464b-a52a-13314c9880f5)
 ![Screenshot from 2024-11-28 09-07-04](https://github.com/user-attachments/assets/587643b3-8e0e-4201-b1d3-3327fab840c6)
-
-
+     ##ROLES PAGES
+![Screenshot from 2024-11-28 09-10-33](https://github.com/user-attachments/assets/8653f406-fb3a-4753-8647-01b6de8bece5)
+![Screenshot from 2024-11-28 09-10-45](https://github.com/user-attachments/assets/01041e30-f8d9-4349-a5a0-eadce32a858e)
+![Screenshot from 2024-11-28 09-11-14](https://github.com/user-attachments/assets/3b16e718-bb59-4431-9ea8-2b550eba4707)
+     ##PERMISSIONS PAGE
+[Screenshot from 2024-11-28 09-13-16](https://github.com/user-attachments/assets/6c64212b-452c-4567-ac22-645169e0ffef)
+![Screenshot from 2024-11-28 09-13-26](https://github.com/user-attachments/assets/6ea895f1-fd9c-44fd-80fc-9590b44b163f)
+![Screenshot from 2024-11-28 09-13-41](https://github.com/user-attachments/assets/6b7ed701-1c1f-4b84-85d6-39da270d8b4e)
 
 
 ## Support
